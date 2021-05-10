@@ -6,17 +6,16 @@ class Load extends Phaser.Scene {
     preload() {
         this.load.path = './assets/';
         // BE REALLY GOOD WITH COMMENTS HERE
+        // LEVEL SELECT Assets
+        game.load.spritesheet('buttons', 'imgs/number-buttons-90x90.png', 90, 90);
         // Tutorial Loadin Assets
         
-        
         // fancified loading screen stuff below
-        // loading bar
         let width  = this.cameras.main.width;
         let height = this.cameras.main.height;
 
         this.loadingNum = 0;
-        this.logoConfig = {fontFamily: 'Dagger', fontSize: '72px', backgroundColor: '#FFFFFF', color: '#000000'};
-        let GMG = this.add.text(centerX, centerY - txtSpacing, ' GMG ', this.logoConfig).setOrigin(0.5);
+        let GMG = this.add.text(centerX, centerY - txtSpacing, ' GMG ', logoConfig).setOrigin(0.5);
         let loadingText = this.add.text(
             width / 2,
             height / 2 + 185,

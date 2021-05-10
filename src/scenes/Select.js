@@ -4,7 +4,10 @@ class Select extends Phaser.Scene {
     }
 
     create() {
-        // set up cursor keys for title screen input
+        game.stage.backgroundColor = '#ffa500';
+        // setup level buttons
+        tutorial = game.add.button(centerX, centerY, 'buttons', down(), this, 1, 0 ,2);
+        // set up cursor keys for level select input
         cursors = this.input.keyboard.createCursorKeys();
     }
 
@@ -13,5 +16,14 @@ class Select extends Phaser.Scene {
             // start play scene
             this.scene.start('title');
         }
+    }
+
+    over(){
+        console.log('Hovered over a Button');
+    }
+    down(){
+        console.log('Clicked Down on button');
+        // move to specific scene heres
+        this.scene.start('tutorial');
     }
 }

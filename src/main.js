@@ -28,5 +28,6 @@ let time;   // time in game, used for event triggers
 // text configs use Font we want later
 // change or add more configs as needed
 let titleConfig = {fontFamily: 'Dagger', fontSize: '72px', color: '#FFFFFF'};
-let bodyConfig = {fontFamily: 'Dagger', fontSize: '36px', color: '#FFFFFF'};
-let subConfig = {fontFamily: 'Dagger', fontSize: '24px', color: '#FFFFFF'};
+let bodyConfig  = {fontFamily: 'Dagger', fontSize: '36px', color: '#FFFFFF'};
+let subConfig   = {fontFamily: 'Dagger', fontSize: '24px', color: '#FFFFFF'};
+let logoConfig  = {fontFamily: 'Dagger', fontSize: '72px', backgroundColor: '#FFFFFF', color: '#000000'};
