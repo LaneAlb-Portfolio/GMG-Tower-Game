@@ -9,30 +9,33 @@
     <!-- add new .js by doing 
         <script type="text/javascript" src="/PATHTOFILE/NAME OF .JS FILE"></script>
     -->
-    <script type="text/javascript" src="./src/main.js"></script>
-    <script type="text/javascript" src="./src/scene/Title.js"></script>
-    <script type="text/javascript" src="./src/scene/Select.js"></script>
-    <script type="text/javascript" src="./src/scene/Tutorial.js"></script>
-    <script type="text/javascript" src="./src/scene/GameOver.js"></script>
-    <script type="text/javascript" src="./src/scene/Credits.js"></script>
+    <script type="text/javascript" src="./src/scenes/Title.js"></script>
+    <script type="text/javascript" src="./src/scenes/Load.js"></script>
+    <script type="text/javascript" src="./src/scenes/Select.js"></script>
+    <script type="text/javascript" src="./src/scenes/Tutorial.js"></script>
+    <script type="text/javascript" src="./src/scenes/GameOver.js"></script>
+    <script type="text/javascript" src="./src/scenes/Credits.js"></script>
+    <!-- Load Prefabs under here-->
+    <script type="text/javascript" src="./src/main.js"></script> <!-- Keep main.js at the bottom-->
     <!--
-        Using a custom font either .ttf or .otf file uncomment everything below here:
-        <style>
-        body {
-            background-color: rgb(43, 43, 43);
-        }
-        canvas {
-            border: 5px solid #4664a5;
-        }
-        @font-face {
-            font-family: NameUsedToReferToFont; this is basically a variable name
-            src: url(./assets/font/DAGGERSQUARE.otf); replace DAGGERSQUARE.OTF with the ttf or otf file
-            font-weight: 400;
-            font-weight: normal;
-        }
-    </style>
-    <div style="font-family:Dagger; position:absolute; left:-1000px; visibility:hidden;">.</div>
+    Using a custom font either .ttf or .otf file
+    ADD THE BELOW TO THE <STYLE> AREA
+    @font-face {
+        font-family: NameUsedToReferToFont; this is basically a variable name
+        src: url(./assets/font/DAGGERSQUARE.otf); replace DAGGERSQUARE.OTF with the ttf or otf file
+        font-weight: 400;
+        font-weight: normal;
+    }
+        <div style="font-family:Dagger; position:absolute; left:-1000px; visibility:hidden;">.</div>
     -->
+    <style>
+      body{
+          background-color: rgb(116, 212, 196);
+      }
+      canvas{
+          border: 5px solid #f1d893;
+      }
+    </style>
 </head>
 <body>
     <div id="Tower Demolition"></div>
