@@ -7,7 +7,7 @@ class Load extends Phaser.Scene {
         this.load.path = './assets/';
         // BE REALLY GOOD WITH COMMENTS HERE
         // LEVEL SELECT Assets
-        game.load.spritesheet('buttons', 'imgs/number-buttons-90x90.png', 90, 90);
+        this.load.spritesheet('buttons', 'imgs/number-buttons-90x90.png', {frameWidth: 90, frameHeight: 90});
         // Tutorial Loadin Assets
         
         // fancified loading screen stuff below
@@ -46,7 +46,7 @@ class Load extends Phaser.Scene {
         });
 
         for (let i = 0; i < 4000; i++) {
-            this.load.image('black', 'img/black.png')
+            //this.load.image('black', 'img/black.png')
         }
     }
 

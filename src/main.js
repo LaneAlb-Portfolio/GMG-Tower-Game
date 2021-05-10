@@ -12,7 +12,7 @@ let config = {
         arcade: {//if we want specific settings for arcade physics put in here
         }
     },
-    scene: [ Title, Load, Select, Tutorial, GameOver, Credits ]
+    scene: [ Title, Load, Tutorial, Select, GameOver, Credits ] // to change where loading screen is move it around in this array
 }
 
 // define game
