@@ -8,8 +8,10 @@ class Load extends Phaser.Scene {
         // BE REALLY GOOD WITH COMMENTS HERE
         // LEVEL SELECT Assets
         this.load.spritesheet('buttons', 'imgs/number-buttons-90x90.png', {frameWidth: 90, frameHeight: 90});
+        this.load.image('button2', 'imgs/tempButton2.png');
         // Tutorial Loadin Assets
-        
+        // temp player
+        this.load.atlas('player', 'imgs/spaceman.png', 'imgs/spaceman.json');
         // fancified loading screen stuff below
         let width  = this.cameras.main.width;
         let height = this.cameras.main.height;
