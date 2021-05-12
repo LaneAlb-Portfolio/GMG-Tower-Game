@@ -29,7 +29,7 @@ class Title extends Phaser.Scene {
     update() {
         if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
             // start play scene
-            this.scene.start('loading');
+            this.scene.start('select');
         }
     }
 }

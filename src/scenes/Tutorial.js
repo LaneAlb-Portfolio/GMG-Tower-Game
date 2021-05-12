@@ -4,6 +4,9 @@ class Tutorial extends Phaser.Scene {
     }
 
     create() {
+        // fog of war attempting
+        // when you get some temp assets try https://blog.ourcade.co/posts/2020/phaser3-fog-of-war-field-of-view-roguelike/
+
         // player stuff here
         player = new Player(this, 64, gameH-32, 'player', 0);
         player.setScale(1.5);

@@ -17,7 +17,7 @@ class Load extends Phaser.Scene {
         let height = this.cameras.main.height;
 
         this.loadingNum = 0;
-        let GMG = this.add.text(centerX, centerY - txtSpacing, ' GMG ', logoConfig).setOrigin(0.5);
+        this.add.text(centerX, centerY - txtSpacing, ' GMG ', logoConfig).setOrigin(0.5);
         let loadingText = this.add.text(
             width / 2,
             height / 2 + 185,
@@ -48,13 +48,13 @@ class Load extends Phaser.Scene {
         });
 
         for (let i = 0; i < 4000; i++) {
-            //this.load.image('black', 'img/black.png')
+            this.load.image('black', 'imgs/black.jpg');
         }
     }
 
     update(){
         if(true){
-        this.scene.start('select');
+        this.scene.start('title');
         }
     }
 }
