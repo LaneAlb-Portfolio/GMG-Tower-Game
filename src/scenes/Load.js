@@ -12,6 +12,17 @@ class Load extends Phaser.Scene {
         // Tutorial Loadin Assets
         // temp player
         this.load.atlas('player', 'imgs/spaceman.png', 'imgs/spaceman.json');
+        //temp background
+        this.load.image('bg', 'imgs/black.jpg');
+        //temp faucet image
+        this.load.image('faucet', "imgs/faucet.png");
+        //temp drain plug image
+        this.load.image('drainplug','imgs/drain_plug.png');
+        //temp sounds
+        this.load.audio('faucet','sound/Turning Off Faucet.mp3');
+        this.load.audio('waterrun','sound/Running Water.mp3');
+        this.load.audio('drain','sound/Water Drain.mp3');
+
         // fancified loading screen stuff below
         let width  = this.cameras.main.width;
         let height = this.cameras.main.height;
