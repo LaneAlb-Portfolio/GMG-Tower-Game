@@ -4,8 +4,12 @@ class Tutorial extends Phaser.Scene {
     }
 
     create() {
+        // graphics for textboxes
+        this.graphics = this.make.graphics();
+        this.tb;
+        // change cursor on demand this.input.setDefaultCursor('url(asset/Location), pointer');
         // fog of war attempting
-        // when you get some temp assets try https://blog.ourcade.co/posts/2020/phaser3-fog-of-war-field-of-view-roguelike/
+        // when you get some temp assets try https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-flashlight-spotlight-magic-lens/
 
         //temp background (i think is being used for camera things)
         let bg = this.add.image(0,0,'bg').setOrigin(0);
@@ -29,7 +33,7 @@ class Tutorial extends Phaser.Scene {
         });
         this.facuetsprite.on('pointerdown',(pointer, dragX, dragY) => {// play looped sound when pressed, loop will be later though
             this.sound.play('faucet', {
-                volume: 0.25
+                volume: 0.15
             });
         });
         // this.facuetsprite.on('pointerup',(pointer, dragX, dragY) => {// stop playing sound when let go
@@ -54,8 +58,15 @@ class Tutorial extends Phaser.Scene {
             this.water.destroy();
             this.sound.play('drain')
         });
-        
 
+        // POINTER HOVER TOOLTIPS
+        this.drainplgsprite.on('pointerover', (pointer) => {
+            this.textbox(pointer.x, pointer.y);
+        });
+        this.drainplgsprite.on('pointerout', (pointer) => {// delete textbox after
+            console.log("textbox destructor");
+            this.tb.clear();
+        });
         //camera things
         //configuration
         this.cameras.main.setBounds(0,0,bg.displayWidth,480);
@@ -63,8 +74,9 @@ class Tutorial extends Phaser.Scene {
         //have the camera follow the player
         this.cameras.main.startFollow(player);
 
-        // set up cursor keys
-        cursors = this.input.keyboard.createCursorKeys();
+        // set up cursor keys and movement keys
+        cursors  = this.input.keyboard.createCursorKeys();
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D"});
     }
 
     update() {
@@ -76,5 +88,9 @@ class Tutorial extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
             this.scene.start('title');
         }
+    }
+
+    textbox(x,y){
+        this.tb = this.graphics.strokeRect(x, y, 50, 75);
     }
 }

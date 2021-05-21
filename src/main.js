@@ -26,6 +26,7 @@ let txtSpacing = 64;
 let player; // this makes referencing player object a bit cleaner
 let time;   // time in game, used for event triggers
 let cursors;
+let movement;
 // text configs use Font we want later
 // change or add more configs as needed
 let titleConfig = {fontFamily: 'Dagger', fontSize: '72px', color: '#FFFFFF'};
