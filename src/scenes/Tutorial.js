@@ -4,9 +4,8 @@ class Tutorial extends Phaser.Scene {
     }
 
     create() {
-        // graphics for textboxes
-        this.graphics = this.make.graphics();
-        this.tb;
+        // Text Bubbles Prefab 
+        this.boxMsgs = new TextBubbles();
         // change cursor on demand this.input.setDefaultCursor('url(asset/Location), pointer');
         // when you get some temp assets try https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-flashlight-spotlight-magic-lens/
 
@@ -21,14 +20,13 @@ class Tutorial extends Phaser.Scene {
         this.add.text(150, 380, `Use the ← → Arrows to Move`, subConfig).setOrigin(0.5);
         this.add.text(600, 420, `Use the mouse to click on the faucet`, subConfig).setOrigin(0.5);
         //scene puzzle things
-
         this.water = this.add.rectangle (0, 450, 640, 20, 0xfa2d1).setOrigin(0)
 
         //faucet
         this.facuetsprite = this.add.image(575, 350, 'faucet').setOrigin(0); // add it to the scene
         this.facuetsprite.setScale(0.25); // scale it to the scene
         this.facuetsprite.setInteractive({ // make sure that the object is clickable, and shows hand
-            useHandCursor: true
+            cursor: 'url(./assets/pointers/FaucetPointer.png), pointer',
         });
         this.facuetsprite.on('pointerdown',(pointer, dragX, dragY) => {// play looped sound when pressed, loop will be later though
             this.sound.play('faucet', {
@@ -44,7 +42,7 @@ class Tutorial extends Phaser.Scene {
         this.drainplgsprite.setScale(0.15); //scale it to the scene
         this.drainplgsprite.setInteractive({ // make sure that the object is clickable, shows hand, and enables dragablity
             draggable: true,
-            useHandCursor: true
+            cursor: 'url(./assets/pointers/DrainPointer.png), pointer',
         });
         this.drainplgsprite.on('drag',(pointer, dragX, dragY) => {// drag the object when hold click
             this.drainplgsprite.x = dragX;
@@ -53,26 +51,30 @@ class Tutorial extends Phaser.Scene {
         this.drainplgsprite.on('pointerup',(pointer, dragX, dragY) => {// delete the object when let go and play sound
             this.drainplgsprite.destroy();
             this.water.destroy();
-            this.sound.play('drain')
+            this.tb.destroy(); // make sure the tooltip isnt left behind
+            this.sound.play('drain');
         });
 
         // ALL Pointer Hover Interactions
         // "pointerover" == when pointer is hovering on object
         // "pointerout " == when pointer is NOT hovering on object
         this.drainplgsprite.on('pointerover', (pointer) => {
-            this.input.setDefaultCursor('url(./assets/pointers/DrainPointer.png), pointer');
-            this.textbox(pointer.x, pointer.y);
+            let x = this.drainplgsprite.x ;
+            let y = this.drainplgsprite.y;
+            y = y - y / 10;
+            this.textbox(x, y, 'drain');
         });
         this.drainplgsprite.on('pointerout', (pointer) => {
-            console.log("textbox destructor");
-            this.tb.clear();
-            this.input.setDefaultCursor();
+            this.tb.destroy();
         });
         this.facuetsprite.on('pointerover',(pointer) => {
-            this.input.setDefaultCursor('url(./assets/pointers/FaucetPointer.png), pointer');
+            let x = this.facuetsprite.x;
+            let y = this.facuetsprite.y;
+            y = y - y / 10;
+            this.textbox(x, y, 'faucet');
         });
         this.facuetsprite.on('pointerout',(pointer) => {
-            this.input.setDefaultCursor();
+            this.tb.destroy();
         });
 
         //camera things
@@ -89,6 +91,8 @@ class Tutorial extends Phaser.Scene {
 
     update() {
         player.update();
+        // if player is "wading through water"
+        this.physics.world.overlap(player, this.water, player.slow(), null, this);
         // wait for UP input to restart game
         if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.scene.start('select');
@@ -98,7 +102,21 @@ class Tutorial extends Phaser.Scene {
         }
     }
 
-    textbox(x,y){
-        this.tb = this.graphics.strokeRect(x, y, 50, 75);
+    textbox(x, y, objName){
+        //console.log("Txtbox being made for:" + objName);
+        let height = Phaser.Math.FloorTo((this.boxMsgs.messageLength(objName) * 16) / 80 );
+        //console.log("Expected wordWrap == " + height);
+        this.txtstyle = {
+            fontFamily: 'Dagger', 
+            fontSize: '16px',
+            color: '#FFFFFF',
+            strokeThickness: 1,
+            stroke: '#000000',
+            backgroundColor: '#81468f',
+            align: 'center',
+            fixedWidth:  80,
+            wordWrap: {width: 80}, // keep width the same as fixedWidth
+        }
+        this.tb = this.add.text(x, y-((height-1)*10), this.boxMsgs.messageFind(objName), this.txtstyle).setOrigin(0,0);
     }
 }

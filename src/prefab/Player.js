@@ -32,4 +32,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.flipped = !this.flipped;
         this.setFlipY(this.flipped);
     }
+
+    slow(){
+        // slow player for some reason 
+        this.VelocityX = this.VelocityX/2;
+    }
 }
