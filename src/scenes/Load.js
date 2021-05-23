@@ -9,6 +9,8 @@ class Load extends Phaser.Scene {
         // LEVEL SELECT Assets
         this.load.spritesheet('buttons', 'imgs/number-buttons-90x90.png', {frameWidth: 90, frameHeight: 90});
         this.load.image('button2', 'imgs/tempButton2.png');
+        // Foreground Tint Image
+        this.load.image('tinter', 'imgs/screenTint.jpg');
         // Tutorial Loadin Assets
         // temp player
         this.load.atlas('player', 'imgs/spaceman.png', 'imgs/spaceman.json');

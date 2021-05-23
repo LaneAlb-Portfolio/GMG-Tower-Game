@@ -6,8 +6,6 @@ class Tutorial extends Phaser.Scene {
     create() {
         // Text Bubbles Prefab 
         this.boxMsgs = new TextBubbles();
-        // change cursor on demand this.input.setDefaultCursor('url(asset/Location), pointer');
-        // when you get some temp assets try https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-flashlight-spotlight-magic-lens/
 
         //temp background
         let bg = this.add.image(0,0,'bg').setOrigin(0);
@@ -84,6 +82,14 @@ class Tutorial extends Phaser.Scene {
         //have the camera follow the player
         this.cameras.main.startFollow(player);
 
+        // tint entire forground for the "fog of war" effect
+        this.rt = new Phaser.GameObjects.RenderTexture(this, 0,0, gameW, gameH).setVisible(false);
+        this.cover = this.add.image(0,0, 'tinter').setOrigin(0);
+        this.cover.alpha = 0.5;
+        this.cover.mask = new Phaser.Display.Masks.BitmapMask(this, this.rt);
+        this.cover.mask.invertAlpha = true;
+        this.light = this.add.rectangle(player.x, player.y, 100, 150, 0xffffff);
+        this.light.visible = false;
         // set up cursor keys and movement keys
         cursors  = this.input.keyboard.createCursorKeys();
         movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D"});
@@ -91,6 +97,9 @@ class Tutorial extends Phaser.Scene {
 
     update() {
         player.update();
+        //fog of war around player
+        this.rt.clear();
+        this.rt.draw(this.light, player.x, player.y);
         // if player is "wading through water"
         this.physics.world.overlap(player, this.water, player.slow(), null, this);
         // wait for UP input to restart game
@@ -118,5 +127,12 @@ class Tutorial extends Phaser.Scene {
             wordWrap: {width: 80}, // keep width the same as fixedWidth
         }
         this.tb = this.add.text(x, y-((height-1)*10), this.boxMsgs.messageFind(objName), this.txtstyle).setOrigin(0,0);
+    }
+
+    ptrMovement(pointer){
+        const x = pointer.x - this.cover.x + this.cover.width * 0.5;
+        const y = pointer.y - this.cover.y + this.cover.height* 0.5;
+        this.rt.clear();
+        this.rt.draw(this.ptrLight, x, y);
     }
 }

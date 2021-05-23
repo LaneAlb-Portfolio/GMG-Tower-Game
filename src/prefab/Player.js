@@ -18,9 +18,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     update() {
         // get movement based on input
         if(movement.right.isDown){
-            this.setVelocityX(160);
+            this.setVelocityX(200);
         } else if(movement.left.isDown) {
-            this.setVelocityX(-160);
+            this.setVelocityX(-200);
         } else {
             this.setVelocityX(0);
         }
