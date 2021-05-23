@@ -8,10 +8,9 @@ class Tutorial extends Phaser.Scene {
         this.graphics = this.make.graphics();
         this.tb;
         // change cursor on demand this.input.setDefaultCursor('url(asset/Location), pointer');
-        // fog of war attempting
         // when you get some temp assets try https://blog.ourcade.co/posts/2020/phaser-3-object-reveal-flashlight-spotlight-magic-lens/
 
-        //temp background (i think is being used for camera things)
+        //temp background
         let bg = this.add.image(0,0,'bg').setOrigin(0);
         // player stuff here
         player = new Player(this, 128, gameH-32, 'player', 0);
@@ -40,8 +39,6 @@ class Tutorial extends Phaser.Scene {
         //     this.sound.stop()
         // });
 
-
-
         //drain plug
         this.drainplgsprite= this.add.image(25, 457, 'drainplug').setOrigin(0); //add it to the scene
         this.drainplgsprite.setScale(0.15); //scale it to the scene
@@ -59,14 +56,25 @@ class Tutorial extends Phaser.Scene {
             this.sound.play('drain')
         });
 
-        // POINTER HOVER TOOLTIPS
+        // ALL Pointer Hover Interactions
+        // "pointerover" == when pointer is hovering on object
+        // "pointerout " == when pointer is NOT hovering on object
         this.drainplgsprite.on('pointerover', (pointer) => {
+            this.input.setDefaultCursor('url(./assets/pointers/DrainPointer.png), pointer');
             this.textbox(pointer.x, pointer.y);
         });
-        this.drainplgsprite.on('pointerout', (pointer) => {// delete textbox after
+        this.drainplgsprite.on('pointerout', (pointer) => {
             console.log("textbox destructor");
             this.tb.clear();
+            this.input.setDefaultCursor();
         });
+        this.facuetsprite.on('pointerover',(pointer) => {
+            this.input.setDefaultCursor('url(./assets/pointers/FaucetPointer.png), pointer');
+        });
+        this.facuetsprite.on('pointerout',(pointer) => {
+            this.input.setDefaultCursor();
+        });
+
         //camera things
         //configuration
         this.cameras.main.setBounds(0,0,bg.displayWidth,480);
