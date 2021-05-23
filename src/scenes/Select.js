@@ -23,7 +23,7 @@ class Select extends Phaser.Scene {
                 this.scene.start('tutorial');
                 break;
             case 'lvl1':
-                this.scene.start('level1');
+                this.scene.start('levelOne');
                 break;
             default:
                 console.log('Default Switch Case');
@@ -33,7 +33,7 @@ class Select extends Phaser.Scene {
     update() {
         if (Phaser.Input.Keyboard.JustDown(cursors.left)) {
             // start play scene
-            this.scene.start('title');
+            this.scene.start('levelOne');
         }
     }
 }
