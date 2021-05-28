@@ -7,15 +7,30 @@ class Tutorial extends Phaser.Scene {
         // Text Bubbles Prefab 
         this.boxMsgs = new TextBubbles();
 
-        //temp background
-        let bg = this.add.image(0,0,'bg').setOrigin(0);
+        //let bg = this.add.image(0,0,'bg').setOrigin(0);
+        this.map = this.make.tilemap({key: 'TEMPMAP'});
+        this.tileset = this.map.addTilesetImage('Asset 1');
+        this.floor = this.map.createLayer('Floors', this.tileset, 0, 0); // make floors walkable / move through from bottom
+        this.Wall  = this.map.createLayer('Walls', this.tileset, 0, 0); // make walls be walls
+        this.ts = this.map.addTilesetImage('Ladder');
+        this.climbable = this.map.createLayer('Ladders', this.ts, 0,-25);
         // player stuff here
-        player = new Player(this, 128, gameH-32, 'player', 0);
-        player.setScale(1);
+        let frameNames = this.anims.generateFrameNames('player',{
+            start: 1, end: 6, prefix: 'spacemanrun'
+        });
+        this.anims.create({
+            key: 'run',
+            frames: frameNames,
+            frameRate: 20,
+            repeat: -1
+        });
+        player = new Player(this, 64, gameH/2, 'player', 0);
+        player.setScale(1.5);
+        player.anims.play('run');
         // temp text
         this.add.text(150, 340, `Hi I am tutorial scene`, subConfig).setOrigin(0.5);
         this.add.text(150, 360, `Press ↑ for Level Select, ↓ for Title Screen`, subConfig).setOrigin(0.5);
-        this.add.text(150, 380, `Use the ← → Arrows to Move`, subConfig).setOrigin(0.5);
+        this.add.text(150, 380, `Use the A D to Move`, subConfig).setOrigin(0.5);
         this.add.text(600, 420, `Use the mouse to click on the faucet`, subConfig).setOrigin(0.5);
         //scene puzzle things
         this.water = this.add.rectangle (0, 450, 640, 20, 0xfa2d1).setOrigin(0)
@@ -77,10 +92,15 @@ class Tutorial extends Phaser.Scene {
 
         //camera things
         //configuration
-        this.cameras.main.setBounds(0,0,bg.displayWidth,480);
+        this.cameras.main.setBounds(0,0,640,480);
         this.cameras.main.setZoom(1.5);
         //have the camera follow the player
         this.cameras.main.startFollow(player);
+        // setup collisions
+        this.floor.setCollisionByExclusion(-1);
+        this.Wall.setCollisionByExclusion(-1);
+        this.physics.world.collide(player, this.floor, null, null, this);
+        this.physics.world.collide(player, this.Wall, null, null,this);
 
         // tint entire forground for the "fog of war" effect
         this.rt = new Phaser.GameObjects.RenderTexture(this, 0,0, gameW, gameH).setVisible(false);

@@ -19,18 +19,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // get movement based on input
         if(movement.right.isDown){
             this.setVelocityX(200);
+            this.setFlipX(false);
         } else if(movement.left.isDown) {
             this.setVelocityX(-200);
+            this.setFlipX(true);
         } else {
             this.setVelocityX(0);
         }
-    }
-
-    // flip sprite vertical axis
-    flip(){
-        // play animation ifneeded yada yada flipper
-        this.flipped = !this.flipped;
-        this.setFlipY(this.flipped);
     }
 
     slow(){
