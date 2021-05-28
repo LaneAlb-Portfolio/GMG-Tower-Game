@@ -14,6 +14,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.setMaxVelocity(200,300);
         this.setDragY(0);
         this.setBounce(0);
+        this.setGravityY(1000);
     }
     update() {
         // get movement based on input
@@ -29,7 +30,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     slow(){
-        // slow player for some reason 
+        // slow player for some reason
         this.VelocityX = this.VelocityX/2;
+    }
+
+    climb(){
+        if(movement.up.isDown){
+            this.setVelocityX(0);
+            this.setGravityY(0);
+            this.setVelocityY(-150);
+        } else if(movement.down.isDown) {
+            this.setVelocityX(0);
+            this.setGravityY(0);
+            this.setVelocityY(150);
+        }
     }
 }
