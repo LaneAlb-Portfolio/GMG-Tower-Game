@@ -10,8 +10,8 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {//if we want specific settings for arcade physics put in here
-            gravity: {y: 1000},
-            tileBias: 32,
+            //gravity: {y: 1000},
+            tileBias: 64,
         }
     },
     scene: [ Load, Title, Tutorial, Level1, Select, GameOver, Credits ] // to change where loading screen is move it around in this array
