@@ -4,6 +4,7 @@ class Tutorial extends Phaser.Scene {
     }
 
     create() {
+        this.movementVelocity = 200;
         // Text Bubbles Prefab 
         this.boxMsgs = new TextBubbles();
         // Loading Tilemap
@@ -11,7 +12,7 @@ class Tutorial extends Phaser.Scene {
         this.tileset = this.map.addTilesetImage('tilemap');
         this.map.createStaticLayer('Background', this.tileset, 0, 0); 
         this.floor        = this.map.createStaticLayer('Platforms', this.tileset, 0, 0); // make platforms
-        this.movingPlats  = this.map.createStaticLayer('Moving Platforms', this.tileset, 0, 0); // make moving platforms
+        //this.movingPlats  = this.map.createStaticLayer('Moving Platforms', this.tileset, 0, 0); // make moving platforms
         this.information  = this.map.createDynamicLayer('Behind Player', this.tileset, 0, 0);  // Everything behind player not in background
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);                // climbable objects
         // for  ease of use
@@ -117,7 +118,16 @@ class Tutorial extends Phaser.Scene {
             emiteZone: {type: 'edge', source: waterfall, quantity: 150},
             blendMode: 'ADD'
         });
-        console.log("Waterfall:" + this.waterEmitter);
+        //console.log("Waterfall:" + this.waterEmitter);
+        //this.movingGroup = this.add.group({
+        //    runChildUpdate: true
+        //});
+        // 0 for sideways 1 for up
+        this.sidePlatforms = new MovingPlat(this, 20*this.tileWidth, 15*this.tileHeight, this.movementVelocity, 0, 'mPlat').setOrigin(0);
+        this.upPlatforms   = new MovingPlat(this, 4*this.tileWidth, 13*this.tileHeight, this.movementVelocity, 1, 'mPlat').setOrigin(0);
+        // add platforms to a group
+        //this.movingGroup.add(this.sidePlatforms);
+        //this.movingGroup.add(this.upPlatforms);
         //camera things
         //configuration
         this.cameras.main.setBounds(0,0,this.mapWidthP,this.mapHeightP);
@@ -126,10 +136,11 @@ class Tutorial extends Phaser.Scene {
         this.cameras.main.startFollow(player);
         // setup collisions anything not of index below has collision ON
         this.floor.setCollisionByExclusion(-1, true);
-        this.movingPlats.setCollisionByExclusion(-1, true);
+        //this.movingPlats.setCollisionByExclusion(-1, true);
         this.climbable.setCollisionByExclusion(-1, true);
         this.physics.add.collider(this.floor, player);
-        this.physics.add.collider(this.movingPlats, player);
+        this.physics.add.collider(this.upPlatforms, player);
+        this.physics.add.collider(this.sidePlatforms, player);
         this.physics.add.collider(this.water, player);
         this.physics.add.overlap (this.climbable, player);
         // tint entire forground for the "fog of war" effect
@@ -167,18 +178,41 @@ class Tutorial extends Phaser.Scene {
         {
             player.climb();
         }
-        if(this.information.getTileAtWorldXY(this.pointerX, this.pointerY)) 
-        {
-            console.log("information hover");
+        // can try collide tiles later or the actual overlaps
+        //this.physics.world.overlap(player, this.sidePlatforms, this.platformMovement('side'), null, this);
+        //this.physics.world.overlap(player, this.upPlatforms, this.platformMovement('up'), null, this);
+        if(Phaser.Math.Within(player.x, this.sidePlatforms.x, 64) && Phaser.Math.Within(player.y, this.sidePlatforms.y, 64)){
+            this.sidePlatforms.move();
+        } else {
+            this.sidePlatforms.setVelX(0);
+            this.sidePlatforms.velocity = -(this.sidePlatforms.velocity);
         }
-        // if player is "wading through water"
-        //this.physics.world.overlap(player, this.water, this.textbox(player.x, player.y, 'water'), null, this);
+        if(Phaser.Math.Within(player.x, this.upPlatforms.x, 64) && Phaser.Math.Within(player.y, this.upPlatforms.y, 64)){
+            this.upPlatforms.move();
+        } else {
+            this.sidePlatforms.setVelY(0);
+            this.upPlatforms.velocity = -(this.sidePlatforms.velocity);
+        }
         // wait for UP input to restart game
         if (Phaser.Input.Keyboard.JustDown(cursors.up)) {
             this.scene.start('select');
         }
         if (Phaser.Input.Keyboard.JustDown(cursors.down)) {
             this.scene.start('title');
+        }
+    }
+
+    stopPlayer(){
+        if(this.water && player.VelocityX < 0){
+            player.setVelX(0);
+        }
+    }
+
+    platformMovement(direction){
+        if(direction == 'up'){
+            this.upPlatforms.move();
+        } else {
+            this.sidePlatforms.move();
         }
     }
 

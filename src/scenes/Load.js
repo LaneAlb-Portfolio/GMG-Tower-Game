@@ -24,6 +24,8 @@ class Load extends Phaser.Scene {
         this.load.image('drainplug','imgs/drain_plug.png');
         // waterdrops
         this.load.image('waterdrop', 'imgs/Water Drop.png');
+        // moving platform
+        this.load.image('mPlat', 'tilemaps/MovingPlat.png');
         //temp sounds
         this.load.audio('faucet','sound/Turning Off Faucet.mp3');
         this.load.audio('waterrun','sound/Running Water.mp3');

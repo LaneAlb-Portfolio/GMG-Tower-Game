@@ -45,4 +45,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     jump(){
         this.setVelocityY(-500);
     }
+
+    setVelX(amount){this.setVelocityX(amount);}
+    setVelY(amount){this.setVelocityY(amount);}
 }
