@@ -8,10 +8,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);               // add to existing scene, displayList, updateList
         scene.physics.add.existing(this);       // add physics body
         this.setImmovable(false);    
-        this.setCollideWorldBounds(true);
+        //this.setCollideWorldBounds(true);
         this.setDepth(1); // set z height to 
         this.setBlendMode('SCREEN');
-        this.setMaxVelocity(200,300);
+        this.setMaxVelocity(1000,500);
         this.setDragY(0);
         this.setBounce(0);
         this.setGravityY(1000);
@@ -19,10 +19,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     update() {
         // get movement based on input
         if(movement.right.isDown){
-            this.setVelocityX(200);
+            this.setVelocityX(1000);
             this.setFlipX(false);
         } else if(movement.left.isDown) {
-            this.setVelocityX(-200);
+            this.setVelocityX(-1000);
             this.setFlipX(true);
         } else {
             this.setVelocityX(0);
@@ -36,13 +36,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     climb(){
         if(movement.up.isDown){
-            this.setVelocityX(0);
-            this.setGravityY(0);
             this.setVelocityY(-150);
         } else if(movement.down.isDown) {
-            this.setVelocityX(0);
-            this.setGravityY(0);
             this.setVelocityY(150);
         }
+    }
+
+    jump(){
+        this.setVelocityY(-500);
     }
 }

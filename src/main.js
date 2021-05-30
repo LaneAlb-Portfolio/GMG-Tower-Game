@@ -1,10 +1,10 @@
 // Phaser Game Settings
 let config = {
     parent: 'Endless Runner',
-    type: Phaser.AUTO,
-    height: 480,
-    width: 640,
+    type: Phaser.FIT,
     scale: {
+        width: 680,
+        height: 480,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
     physics: {
@@ -12,6 +12,7 @@ let config = {
         arcade: {//if we want specific settings for arcade physics put in here
             //gravity: {y: 1000},
             tileBias: 64,
+            debug: true,
         }
     },
     scene: [ Load, Title, Tutorial, Level1, Select, GameOver, Credits ] // to change where loading screen is move it around in this array
