@@ -11,7 +11,7 @@ let config = {
         default: 'arcade',
         arcade: {//if we want specific settings for arcade physics put in here
             //gravity: {y: 1000},
-            tileBias: 64,
+            tileBias: 32,
             debug: true,
         }
     },
