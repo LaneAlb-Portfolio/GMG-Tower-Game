@@ -14,8 +14,13 @@ class Tutorial extends Phaser.Scene {
         this.movingPlats  = this.map.createStaticLayer('Moving Platforms', this.tileset, 0, 0); // make moving platforms
         this.information  = this.map.createDynamicLayer('Behind Player', this.tileset, 0, 0);  // Everything behind player not in background
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);                // climbable objects
-        console.log("TileMap Info: W/H" + this.map.heightInPixels + " , " + this.map.widthInPixels);
-        console.log("Tile W/H: " + this.map.tileHeight + " , " + this.map.tileWidth);
+        // for  ease of use
+        this.tileHeight = this.map.tileHeight;
+        this.tileWidth  = this.map.tileWidth;
+        this.mapHeightP = this.map.heightInPixels;
+        this.mapWidthP  = this.map.widthInPixels;
+        console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
+        console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
 
         //figure out a better solution
         this.ladderXCoords = [307];
@@ -30,7 +35,7 @@ class Tutorial extends Phaser.Scene {
             frameRate: 20,
             repeat: -1
         });
-        player = new Player(this, 128, this.map.heightInPixels - (6*32), 'player', 0);
+        player = new Player(this, (2*this.tileWidth), this.mapHeightP - (3*this.tileHeight), 'player', 0);
         player.setScale(2);
         player.anims.play('run');
         // temp text
@@ -38,7 +43,6 @@ class Tutorial extends Phaser.Scene {
         this.add.text(200, 380, `Use the A D to Move, W and S To Climb Ladders, SPACE to Jump`, subConfig).setOrigin(0.5);
         this.add.text(200, 420, `Use your mouse to interact with objects around you`, subConfig).setOrigin(0.5);
         //scene puzzle things
-        this.water    = this.add.rectangle (0, 450, 640, 20, 0xfa2d1).setOrigin(0);
         this.pointerX = 0;
         this.pointerY = 0;
         this.input.on('pointermove', function(pointer){
@@ -64,8 +68,10 @@ class Tutorial extends Phaser.Scene {
         //drain plug
         // drain is index 132 and 133
         this.drains = this.map.findByIndex(133, 0, true, this.information);
-        console.log(this.drains.pixelX + "," + this.drains.pixelY);
+        this.water  = this.add.rectangle (this.drains.pixelX - (5*this.tileWidth), this.drains.pixelY - this.tileHeight, 512, 64, 0xfa2d1).setOrigin(0);
+        //console.log(this.drains.pixelX + "," + this.drains.pixelY);
         this.drainplgsprite = this.add.image(this.drains.pixelX, this.drains.pixelY, 'drainplug').setOrigin(0); //add it to the scene
+        //console.log(this.drainplgsprite.x +","+ this.drainplgsprite.y);
         this.drainplgsprite.setScale(0.5); //scale it to the scene
         this.drainplgsprite.setAlpha(0.01);
         this.drainplgsprite.setInteractive({ // make sure that the object is clickable, shows hand, and enables dragablity
@@ -94,13 +100,27 @@ class Tutorial extends Phaser.Scene {
         this.drainplgsprite.on('pointerout', (pointer) => {
             this.tb.destroy();
         });
-        //let waterfall = new Phaser.Geom.
         // bottom pipe is id 123 we put water particles here
-        this.waterManager = this.add.particles
-
+       // this.bottomPipe = this.map.findByIndex(107, 0, true, this.floor); // the drain can be collided with so its on this layer
+       // console.log(this.bottomPipe);
+        let waterfall = new Phaser.Geom.Line(
+            (this.drains.pixelX - this.tileWidth*3), (this.drains.pixelY - this.tileHeight*4), //x1, y1
+            (this.drains.pixelX - this.tileWidth*2), (this.drains.pixelY - this.tileHeight*4), //x2, y2
+        );
+        this.waterManager = this.add.particles('waterdrop');
+        this.waterEmitter = this.waterManager.createEmitter({
+            gavityY: 150,
+            lifespan: 500,
+            alpha: {start: 1, end: 0.01},
+            scale: 1.5,
+            tint: [0x03bafc, 0x1384ad, 0x325ed9, 0x6186ed, 0x1269b0], // blue tints
+            emiteZone: {type: 'edge', source: waterfall, quantity: 150},
+            blendMode: 'ADD'
+        });
+        console.log("Waterfall:" + this.waterEmitter);
         //camera things
         //configuration
-        this.cameras.main.setBounds(0,0,this.map.widthInPixels,this.map.heightInPixels);
+        this.cameras.main.setBounds(0,0,this.mapWidthP,this.mapHeightP);
         this.cameras.main.setZoom(1);
         //have the camera follow the player
         this.cameras.main.startFollow(player);
@@ -113,7 +133,7 @@ class Tutorial extends Phaser.Scene {
         this.physics.add.collider(this.water, player);
         this.physics.add.overlap (this.climbable, player);
         // tint entire forground for the "fog of war" effect
-        this.rt = new Phaser.GameObjects.RenderTexture(this, 0,0, this.map.widthInPixels, this.map.heightInPixels).setVisible(false);
+        this.rt = new Phaser.GameObjects.RenderTexture(this, 0,0, this.mapWidthP,this.mapHeightP).setVisible(false);
         this.cover = this.add.image(0,0, 'tinter').setOrigin(0);
         this.cover.setScale(3);
         this.cover.alpha = 0.5;
