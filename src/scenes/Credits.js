@@ -6,7 +6,7 @@ class Credits extends Phaser.Scene {
     create() {
         // score text flying across screen
         let gmg = this.add.text(centerX, gameH, `GMG Tower Demo By:`, titleConfig).setOrigin(0.5);
-        let peeps = this.add.text(centerX, gameH + txtSpacing*2, `Coding: Lane\nCoding and Sound: Josh\nArt and Sound: Mikayla`, bodyConfig).setOrigin(0.5);
+        let peeps = this.add.text(centerX, gameH + txtSpacing*2, `Coding & Cursors: Lane\nCoding & Design: Josh\nArt & Sound: Mikayla`, bodyConfig).setOrigin(0.5);
         this.tweens.add({
             targets: [gmg],
             duration: 4000,

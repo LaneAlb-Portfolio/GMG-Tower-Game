@@ -49,21 +49,6 @@ class Tutorial extends Phaser.Scene {
             this.pointerX = pointer.x;
             this.pointerY = pointer.y;
         }, this);
-        //faucet
-        /*
-        this.facuetsprite = this.add.image(575, 350, 'faucet').setOrigin(0); // add it to the scene
-        this.facuetsprite.setScale(0.25); // scale it to the scene
-        this.facuetsprite.setInteractive({ // make sure that the object is clickable, and shows hand
-            cursor: 'url(./assets/pointers/FaucetPointer.png), pointer',
-        });
-        this.facuetsprite.on('pointerdown',(pointer, dragX, dragY) => {// play looped sound when pressed, loop will be later though
-            this.sound.play('faucet', {
-                volume: 0.15
-            });
-        });*/
-        // this.facuetsprite.on('pointerup',(pointer, dragX, dragY) => {// stop playing sound when let go
-        //     this.sound.stop()
-        // });
 
         //drain plug
         // drain is index 132 and 133
@@ -101,19 +86,16 @@ class Tutorial extends Phaser.Scene {
             this.tb.destroy();
         });
         // bottom pipe is id 123 we put water particles here
-        this.bottomPipe = this.map.findByIndex(123, 0, true, this.floor); // the drain can be collided with so its on this layer
-        console.log(this.bottomPipe);
-        let waterfall = new Phaser.Geom.Line((39*this.tileWidth),(35*this.tileHeight),(40*this.tileWidth),(35*this.tileHeight));
+        let waterfall = new Phaser.Geom.Line(player.x,player.y, player.x + 240, player.y);
         this.waterManager = this.add.particles('waterdrop');
-        this.waterEmitter = this.waterManager.createEmitter({
+        this.waterManager.createEmitter({
             gavityY: 150,
-            lifespan: 500,
+            lifespan: 1500,
             alpha: {start: 1, end: 0.01},
-            scale: 1.5,
+            scale: 5,
             tint: [0x03bafc, 0x1384ad, 0x325ed9, 0x6186ed, 0x1269b0], // blue tints
-            emiteZone: {type: 'edge', source: waterfall, quantity: 150},
+            emiteZone: {type: 'random', source: waterfall, quantity: 150},
         });
-        //console.log("Waterfall:" + this.waterEmitter);
         //this.movingGroup = this.add.group({
         //    runChildUpdate: true
         //});
@@ -221,12 +203,5 @@ class Tutorial extends Phaser.Scene {
             wordWrap: {width: 80}, // keep width the same as fixedWidth
         }
         this.tb = this.add.text(x, y-((height-1)*10), this.boxMsgs.messageFind(objName), this.txtstyle).setOrigin(0,0);
-    }
-
-    ptrMovement(pointer){
-        const x = pointer.x - this.cover.x + this.cover.width * 0.5;
-        const y = pointer.y - this.cover.y + this.cover.height* 0.5;
-        this.rt.clear();
-        this.rt.draw(this.ptrLight, x, y);
     }
 }

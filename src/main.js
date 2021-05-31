@@ -15,7 +15,7 @@ let config = {
             debug: true,
         }
     },
-    scene: [ Load, Title, Tutorial, Level1, Select, GameOver, Credits ] // to change where loading screen is move it around in this array
+    scene: [ Load, Title, Tutorial, Level1, Select, GameOver, Credits, StaticCredits ] // to change where loading screen is move it around in this array
 }
 
 // define game
@@ -30,9 +30,12 @@ let player; // this makes referencing player object a bit cleaner
 let time;   // time in game, used for event triggers
 let cursors;
 let movement;
+let completed = [0,0,0,0,0]; // check for completed levels
 // text configs use Font we want later
 // change or add more configs as needed
-let titleConfig = {fontFamily: 'Dagger', fontSize: '72px', color: '#FFFFFF'};
-let bodyConfig  = {fontFamily: 'Dagger', fontSize: '36px', color: '#FFFFFF'};
-let subConfig   = {fontFamily: 'Dagger', fontSize: '15px', color: '#FFFFFF'};
-let logoConfig  = {fontFamily: 'Dagger', fontSize: '72px', backgroundColor: '#FFFFFF', color: '#000000'};
+let titleConfig = {fontFamily: 'thinPixel', fontSize: '128px', color: '#FFFFFF'};
+let headerConfig= {fontFamily: 'thinPixel', fontSize: '72px', color: '#FFFFFF'};
+let bodyConfig  = {fontFamily: 'thinPixel', fontSize: '36px', color: '#FFFFFF'};
+let subConfig   = {fontFamily: 'thinPixel', fontSize: '15px', color: '#FFFFFF'};
+let logoConfig  = {fontFamily: 'thinPixel', fontSize: '72px', backgroundColor: '#FFFFFF', color: '#000000'};
+let buttonConfg = {fontFamily: 'thinPixel', fontSize: '128px', color: '#FFFFFF', align: 'center'};

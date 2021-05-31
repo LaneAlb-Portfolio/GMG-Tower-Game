@@ -41,7 +41,7 @@ class Load extends Phaser.Scene {
             width / 2,
             height / 2 + 185,
             'Loading...',
-            {fontFamily: 'Dagger',
+            {fontFamily: 'thinPixel',
             fontSize: '36px',
             color: '#FFFFFF'}
         );
@@ -51,7 +51,7 @@ class Load extends Phaser.Scene {
             width / 2,
             height / 2 + 215,
             '0%',
-            {fontFamily: 'Dagger',
+            {fontFamily: 'thinPixel',
             fontSize: '24px',
             color: '#FFFFFF'      
         });
