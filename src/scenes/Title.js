@@ -46,7 +46,7 @@ class Title extends Phaser.Scene {
         }
         if (Phaser.Input.Keyboard.JustDown(this.selectors.space)) {
             // start play scene
-            this.scene.start('credits');
+            this.scene.start('staticCredits');
         }
     }
 }

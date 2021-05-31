@@ -6,8 +6,8 @@ class Level1 extends Phaser.Scene {
     create(){ 
         console.log('lvl1 create');
         // temp text
-        this.add.text(150, 340, `Hi I am Level1`, subConfig).setOrigin(0.5);
-        this.add.text(150, 360, `Press W for Level Select, S for Title Screen`, subConfig).setOrigin(0.5);
+        this.add.text(150, 340, `Hi I am Level1`, headerConfig).setOrigin(0.5);
+        this.add.text(150, 360, `Press W for Level Select, S for Title Screen`, headerConfig).setOrigin(0.5);
 
         movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D"});
     }

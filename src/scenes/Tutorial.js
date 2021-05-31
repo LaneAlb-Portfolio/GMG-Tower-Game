@@ -5,7 +5,7 @@ class Tutorial extends Phaser.Scene {
 
     create() {
         this.movementVelocity = 200;
-        // Text Bubbles Prefab 
+        // Text Bubbles Prefab
         this.boxMsgs = new TextBubbles();
         // Loading Tilemap
         this.map     = this.make.tilemap({key: 'tempAssetMap'});
@@ -22,9 +22,6 @@ class Tutorial extends Phaser.Scene {
         console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
         console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
 
-        //figure out a better solution
-        this.ladderXCoords = [307];
-        this.ladderYCoords = [332];
         // player stuff here
         let frameNames = this.anims.generateFrameNames('player',{
             start: 1, end: 6, prefix: 'spacemanrun'
@@ -96,9 +93,7 @@ class Tutorial extends Phaser.Scene {
             tint: [0x03bafc, 0x1384ad, 0x325ed9, 0x6186ed, 0x1269b0], // blue tints
             emiteZone: {type: 'random', source: waterfall, quantity: 150},
         });
-        //this.movingGroup = this.add.group({
-        //    runChildUpdate: true
-        //});
+
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.sidePlatforms = new SidewaysPlat(this, 20*this.tileWidth, 15*this.tileHeight, 11*this.tileWidth,this.movementVelocity, 'mPlat').setOrigin(0);
         this.upPlatforms   = new UpwordsPlat(this, 4*this.tileWidth, 13*this.tileHeight, 7*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);
