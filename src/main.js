@@ -31,6 +31,7 @@ let time;   // time in game, used for event triggers
 let cursors;
 let movement;
 let completed = [0,0,0,0,0]; // check for completed levels
+let backmusic;
 // text configs use Font we want later
 // change or add more configs as needed
 let titleConfig = {fontFamily: 'thinPixel', fontSize: '128px', color: '#FFFFFF'};

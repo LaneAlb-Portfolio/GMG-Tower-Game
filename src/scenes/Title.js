@@ -4,6 +4,17 @@ class Title extends Phaser.Scene {
     }
 
     create() {
+        // background music
+        backmusic = this.sound.add('runmp3',{
+            mute: false,
+            volume: 0.8,
+            rate: 0.5,
+            loop:true
+        });
+        backmusic.play();
+        // Background
+        this.add.image(centerX, 0, 'brickBg').setOrigin(0).setTint(0xb1741a).setRotation(1.5708);
+        this.add.image(gameW, 0, 'brickBg').setOrigin(0).setTint(0xdf7544).setRotation(1.5708);
         // Title Txt
         let title = this.add.text(centerX - 15, centerY - txtSpacing, 'Tower Demo', titleConfig).setOrigin(0.5).setTint(0x887255);
         // Body
@@ -35,7 +46,7 @@ class Title extends Phaser.Scene {
         }
         if (Phaser.Input.Keyboard.JustDown(this.selectors.space)) {
             // start play scene
-            this.scene.start('staticCredits');
+            this.scene.start('credits');
         }
     }
 }

@@ -11,10 +11,12 @@ class Load extends Phaser.Scene {
         this.load.image('button2', 'imgs/tempButton2.png');
         // Foreground Tint Image
         this.load.image('tinter', 'imgs/screenTint.jpg');
+        // Background Menu Image
+        this.load.image('brickBg', 'imgs/spacefg.png');
         // Tutorial Loadin Assets
         // temp player
         this.load.atlas('player', 'imgs/spaceman.png', 'imgs/spaceman.json');
-        //temp background
+        //temp Level background
         this.load.image('tilemap', 'tilemaps/tilemap.png'); // load png
         this.load.tilemapTiledJSON('tempAssetMap', 'tilemaps/Tutorial.json'); //load json
         this.load.image('bg', 'imgs/black.jpg');
@@ -26,6 +28,8 @@ class Load extends Phaser.Scene {
         this.load.image('waterdrop', 'imgs/Water Drop.png');
         // moving platform
         this.load.image('mPlat', 'tilemaps/MovingPlat.png');
+        // running soundtrack
+        this.load.audio('runmp3','sound/EndlessRunSong.mp3');
         //temp sounds
         this.load.audio('faucet','sound/Turning Off Faucet.mp3');
         this.load.audio('waterrun','sound/Running Water.mp3');
