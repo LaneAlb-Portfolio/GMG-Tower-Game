@@ -14,8 +14,10 @@ class Load extends Phaser.Scene {
         this.load.atlas('player', 'imgs/spaceman.png', 'imgs/spaceman.json');
         // Tilemap loading
         this.load.image('tilemap 2', 'tilemaps/tilemap 2.png'); // load png
+        this.load.tilemapTiledJSON('MainMenu', 'tilemaps/MainMenu.json');
         this.load.tilemapTiledJSON('tutorialMap', 'tilemaps/Tutorial.json'); //load json
         this.load.tilemapTiledJSON('lvl1Map', 'tilemaps/Level1.json'); //load json
+        this.load.tilemapTiledJSON('lvl2Map', 'tilemaps/Level2.json');
         this.load.image('bg', 'imgs/black.jpg');
         //temp faucet image
         this.load.image('faucet', "imgs/faucet.png");

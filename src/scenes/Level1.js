@@ -14,11 +14,15 @@ class Level1 extends Phaser.Scene {
         this.map     = this.make.tilemap({key: 'lvl1Map'});
         this.tileset = this.map.addTilesetImage('tilemap 2');
         this.map.createStaticLayer('BG', this.tileset, 0, 0); 
-        this.floor        = this.map.createStaticLayer('Grounds', this.tileset, 0, 0); // make ground walkable
+        this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0); // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
-        this.pipes        = this.map.createStaticLayer('Pipes', this.tileset, 0, 0);  // Everything behind player not in background
+        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);  // Everything behind player not in background
+        this.pipesCollide = this.map.createLayer('Collide Pipes', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);       // climbable objects
         this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);        // danger spikes
+        this.puzzleInitial= this.map.createLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
+        this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0); // attention panels
+
         // for  ease of use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
@@ -42,7 +46,7 @@ class Level1 extends Phaser.Scene {
         player.anims.play('run');
 
         // give platforms scene, x, y, endPoint, velocity, texture)
-        this.upPlatforms = new UpwordsPlat(this, this.tileWidth, this.mapHeightP - 2*this.tileHeight, 14*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
+        this.upPlatforms = new UpwordsPlat(this, 7*this.tileWidth, this.mapHeightP - 7*this.tileHeight, 6*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
 
         // bottom pipe is id 123 we put water particles here
         // add water emitter
@@ -60,7 +64,7 @@ class Level1 extends Phaser.Scene {
         //drain plug
         // drain is index 109
         //this.drains = this.map.findByIndex(109, 0, false, this.foreground);
-        this.water  = this.add.rectangle (11*this.tileWidth, 4*this.tileHeight, 3*this.tileWidth, 4*this.tileHeight, 0xfa2d1, 1).setOrigin(0);
+        this.water  = this.add.rectangle (11*this.tileWidth, 4*this.tileHeight, 3*this.tileWidth, 4*this.tileHeight, 0xba4a34, 0.75).setOrigin(0);
         this.drainplgsprite = this.add.image(11*this.tileWidth, 8*this.tileHeight, 'drainplug').setOrigin(0); //add it to the scene
         this.drainplgsprite.setScale(0.5); //scale it to the scene
         this.drainplgsprite.setAlpha(0.01);
@@ -70,6 +74,8 @@ class Level1 extends Phaser.Scene {
         this.drainplgsprite.on('pointerup',(pointer, dragX, dragY) => {// delete the object when let go and play sound
             this.drainplgsprite.destroy();
             this.water.destroy();
+            this.solved = this.map.createLayer('Puzzle Solved', this.tileset, 0, 0);
+            this.puzzleInitial.destroy();
             this.tb.clear(true, true); // make sure the tooltip isnt left behind
             this.sound.play('drain');
         });
@@ -100,7 +106,7 @@ class Level1 extends Phaser.Scene {
         this.startAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'lvl1')});
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.faucet = this.add.rectangle(10.5*this.tileWidth, 5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
+        this.faucet = this.add.rectangle(10.5*this.tileWidth, 7*this.tileHeight, 64, 64, 0xFFFFF, 1);
         this.faucet.setInteractive().on('pointerup', () => { 
             // stop emitter
             console.log("faucet");
@@ -118,12 +124,14 @@ class Level1 extends Phaser.Scene {
         this.floor.setCollisionByExclusion(-1, true);
         this.climbable.setCollisionByExclusion(-1, true);
         this.spikes.setCollisionByExclusion(-1, true);
+        this.pipesCollide.setCollisionByExclusion(-1, true);
         // setup world collliders
         this.physics.add.collider(this.floor, player);
+        this.physics.add.collider(this.pipesCollide, player);
         this.physics.add.collider(this.upPlatforms, player);
+        this.physics.add.collider(this.puzzleInitial, player);
         this.physics.add.overlap (this.climbable, player);
         this.physics.add.overlap (this.spikes, player);
-
         // tint entire forground for the "fog of war" effect
         this.rt = new Phaser.GameObjects.RenderTexture(this, 0,0, this.mapWidthP,this.mapHeightP).setVisible(false);
         this.cover = this.add.image(0,0, 'tinter').setOrigin(0);
@@ -164,6 +172,9 @@ class Level1 extends Phaser.Scene {
         {
             player.climb();
         }
+        if(Phaser.Geom.Intersects.CircleToRectangle(this.light, this.water)){
+            console.log('overlapping');
+        }
         /* can try collide tiles later or the actual overlaps
         this.physics.world.overlap(player, this.sidePlatforms, this.platformMovement('side'), null, this);
         this.physics.world.overlap(player, this.upPlatforms, this.platformMovement('up'), null, this);
@@ -176,6 +187,11 @@ class Level1 extends Phaser.Scene {
           && this.currTime - this.lastTime >= 2500){ // only trigger once every 2.5 seconds
             this.completed();
         }
+    }
+
+    swim(){
+        player.slow();
+        player.climb();
     }
 
     platformMovement(direction){

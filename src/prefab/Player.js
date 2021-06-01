@@ -31,7 +31,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     slow(){
         // slow player for some reason
-        this.VelocityX = this.VelocityX/2;
+        this.setVelocityX(this.VelocityX/2);
     }
 
     climb(){

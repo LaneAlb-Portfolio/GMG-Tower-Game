@@ -17,8 +17,9 @@ class Tutorial extends Phaser.Scene {
         this.floor        = this.map.createStaticLayer('Grounds', this.tileset, 0, 0); // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
         this.pipes        = this.map.createStaticLayer('Pipes', this.tileset, 0, 0);  // Everything behind player not in background
-        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);       // climbable objects
-        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);        // danger spikes
+        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
+        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0, 0);        // danger spikes
+        this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0); // info graphics "on"
         // for  ease of use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
@@ -74,7 +75,8 @@ class Tutorial extends Phaser.Scene {
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.lever = this.add.rectangle(4.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
-        this.lever.setInteractive().on('pointerup', () => { 
+        this.lever.setInteractive().on('pointerup', () => {
+            this.attention.destroy();
             this.noPower = this.map.createLayer('Power Off', this.tileset, 0, 0);
         });
 
