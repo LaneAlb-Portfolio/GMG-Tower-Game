@@ -44,6 +44,19 @@ class Level1 extends Phaser.Scene {
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.upPlatforms = new UpwordsPlat(this, this.tileWidth, this.mapHeightP - 2*this.tileHeight, 14*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
 
+        // bottom pipe is id 123 we put water particles here
+        // add water emitter
+        let waterfall = new Phaser.Geom.Line(player.x,player.y, player.x + 240, player.y);
+        this.waterManager = this.add.particles('waterdrop');
+        this.waterManager.createEmitter({
+            gavityY: 150,
+            lifespan: 1500,
+            alpha: {start: 1, end: 0.01},
+            scale: 5,
+            tint: [0x03bafc, 0x1384ad, 0x325ed9, 0x6186ed, 0x1269b0], // blue tints
+            emiteZone: {type: 'random', source: waterfall, quantity: 150},
+        });
+
         //drain plug
         // drain is index 109
         //this.drains = this.map.findByIndex(109, 0, false, this.foreground);
@@ -72,16 +85,26 @@ class Level1 extends Phaser.Scene {
         this.drainplgsprite.on('pointerout', (pointer) => {
             this.tb.clear(true, true);
         });
-        // bottom pipe is id 123 we put water particles here
-        let waterfall = new Phaser.Geom.Line(player.x,player.y, player.x + 240, player.y);
-        this.waterManager = this.add.particles('waterdrop');
-        this.waterManager.createEmitter({
-            gavityY: 150,
-            lifespan: 1500,
-            alpha: {start: 1, end: 0.01},
-            scale: 5,
-            tint: [0x03bafc, 0x1384ad, 0x325ed9, 0x6186ed, 0x1269b0], // blue tints
-            emiteZone: {type: 'random', source: waterfall, quantity: 150},
+
+        // setup interactables within the scene
+        // turn these into a prefab at some point
+        this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.endAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'condition not met')});
+        this.endAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.heartAttention = this.add.rectangle(14*this.tileWidth, 13*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.heartAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
+        this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.startAttention = this.add.rectangle(this.mapWidthP - 5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.startAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'lvl1')});
+        this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.faucet = this.add.rectangle(10.5*this.tileWidth, 5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
+        this.faucet.setInteractive().on('pointerup', () => { 
+            // stop emitter
+            console.log("faucet");
+            this.waterManager.destroy();
         });
 
         //camera things
@@ -177,7 +200,7 @@ class Level1 extends Phaser.Scene {
     }
 
     textbox(x, y, objName){
-        //console.log("Txtbox being made for:" + objName);
+        console.log("Txtbox being made for:" + objName);
         let height = Phaser.Math.FloorTo((this.boxMsgs.messageLength(objName) * 16) / 100 );
         //console.log("Expected wordWrap == " + height);
         this.txtstyle = {
@@ -192,6 +215,6 @@ class Level1 extends Phaser.Scene {
             wordWrap: {width: 100}, // keep width the same as fixedWidth
         }
         this.tb.add(this.add.text(x, y-((height-1)*10) - 32, // clamp to the middle of the camera
-            this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
+            this.boxMsgs.messageFind(objName), this.txtstyle).setOrigin(0,0).setScrollFactor(0) );
     }
 }

@@ -62,7 +62,7 @@ class Tutorial extends Phaser.Scene {
         this.brainAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
 
         this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.endAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'end')});
+        this.endAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'condition not met')});
         this.endAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.heartAttention = this.add.rectangle(this.mapWidthP - 11*this.tileWidth, 8*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
@@ -70,7 +70,7 @@ class Tutorial extends Phaser.Scene {
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.startAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.startAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'start')});
+        this.startAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'tutorial')});
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.lever = this.add.rectangle(4.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);

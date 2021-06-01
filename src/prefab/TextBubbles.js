@@ -7,6 +7,8 @@ class TextBubbles {
         this.brain  = "This seems to supply power to the house";
         this.heart  = "This seems to move liquid around the pipes";
         this.noExit = "I still have things to do here...";
+        this.tut    = "";
+        this.level1 = "";
     }
 
     messageFind(objectName){
