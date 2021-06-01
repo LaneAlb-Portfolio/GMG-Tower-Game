@@ -7,8 +7,10 @@ class TextBubbles {
         this.brain  = "This seems to supply power to the house";
         this.heart  = "This seems to move liquid around the pipes";
         this.noExit = "I still have things to do here...";
-        this.tut    = "";
-        this.level1 = "";
+        this.tut    = "I'll Need to shut off power to continue on";
+        this.level1 = "The Heart is out of control here";
+        this.cantYet= "I need to Drain this 'Water' first";
+        this.spikes = "I better not touch those things";
     }
 
     messageFind(objectName){
@@ -20,8 +22,16 @@ class TextBubbles {
                 return this.drain;
             case 'brain':
                 return this.brain;
+            case 'tut':
+                return this.tut;
+            case 'lvl1':
+                return this.level1;
             case 'heart':
                 return this.heart;
+            case 'spikes':
+                return this.spikes;
+            case 'cantYet':
+                return this.cantYet;
             case 'condition not met':
                 return this.noExit;
             default:
@@ -39,8 +49,16 @@ class TextBubbles {
                 return this.drain.length;
             case 'brain':
                 return this.brain.length;
+            case 'tut':
+                return this.tut.length;
+            case 'lvl1':
+                return this.level1.length;
             case 'heart':
                 return this.heart.length;
+            case 'spikes':
+                return this.spikes.length;
+            case 'cantYet':
+                return this.cantYet.length;
             case 'condition not met':
                 return this.noExit.length;
             default:

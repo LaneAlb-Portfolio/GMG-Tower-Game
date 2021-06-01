@@ -20,7 +20,7 @@ class Level1 extends Phaser.Scene {
         this.pipesCollide = this.map.createLayer('Collide Pipes', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);       // climbable objects
         this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);        // danger spikes
-        this.puzzleInitial= this.map.createLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
+        this.puzzleInitial= this.map.createStaticLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
         this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0); // attention panels
 
         // for  ease of use
@@ -42,11 +42,11 @@ class Level1 extends Phaser.Scene {
             repeat: -1
         });
         player = new Player(this, this.mapWidthP - 2*this.tileWidth, this.mapHeightP - (3*this.tileHeight), 'player', 0);
-        player.setScale(1.8);
+        player.setScale(1.7);
         player.anims.play('run');
 
         // give platforms scene, x, y, endPoint, velocity, texture)
-        this.upPlatforms = new UpwordsPlat(this, 7*this.tileWidth, this.mapHeightP - 7*this.tileHeight, 6*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
+        this.upPlatforms = new UpwordsPlat(this, 7*this.tileWidth, this.mapHeightP - 7*this.tileHeight, 7*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
 
         // bottom pipe is id 123 we put water particles here
         // add water emitter
@@ -73,11 +73,14 @@ class Level1 extends Phaser.Scene {
         });
         this.drainplgsprite.on('pointerup',(pointer, dragX, dragY) => {// delete the object when let go and play sound
             this.drainplgsprite.destroy();
-            this.water.destroy();
+            this.water.setVisible(0);
             this.solved = this.map.createLayer('Puzzle Solved', this.tileset, 0, 0);
-            this.puzzleInitial.destroy();
+            this.puzzleCollider.destroy(); // destroy collision first
+            this.puzzleInitial.destroy(); 
             this.tb.clear(true, true); // make sure the tooltip isnt left behind
-            this.sound.play('drain');
+            this.drainSound = this.sound.add('drain');
+            this.drainSound.play();
+            this.time.delayedCall(1500, () => {this.drainSound.stop();}); // drain sound is a little bit to long
         });
         // ALL Pointer Hover Interactions
         // "pointerover" == when pointer is hovering on object
@@ -92,21 +95,33 @@ class Level1 extends Phaser.Scene {
             this.tb.clear(true, true);
         });
 
-        // setup interactables within the scene
+        // setup interactables within the scene and cursors
         // turn these into a prefab at some point
-        this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.endAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'condition not met')});
-        this.endAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
-
-        this.heartAttention = this.add.rectangle(14*this.tileWidth, 13*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.heartAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
+        this.heartAttention = this.add.rectangle(11.5*this.tileWidth, 13*this.tileHeight, 192, 128, 0xFFFFF, 1);
+        this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
+        this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.startAttention = this.add.rectangle(this.mapWidthP - 5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.startAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'lvl1')});
+        this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'});
+        this.startAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'lvl1')});
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.faucet = this.add.rectangle(10.5*this.tileWidth, 7*this.tileHeight, 64, 64, 0xFFFFF, 1);
+        this.lever = this.add.rectangle(13.5*this.tileWidth, 7.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
+        this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerdown', () => { 
+            if(this.water.visible){
+                this.textbox(player.x, player.y, 'Cant Do Yet');
+            }
+        });
+        this.lever.on('pointerup', () => {
+            if(this.water.visible){
+                this.time.delayedCall(2500, () => { this.tb.clear(true, true); });
+            } else {
+                this.badCodingPractice = this.map.createLayer('HideBecauseCodeNoWork', this.tileset, 0, 0);
+                this.puzzleDone = this.map.createLayer('Puzzle Done', this.tileset, 0, 0);
+            }
+        });
+        this.faucet = this.add.rectangle(10.5*this.tileWidth, 7*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.faucet.setInteractive().on('pointerup', () => { 
             // stop emitter
             console.log("faucet");
@@ -125,11 +140,12 @@ class Level1 extends Phaser.Scene {
         this.climbable.setCollisionByExclusion(-1, true);
         this.spikes.setCollisionByExclusion(-1, true);
         this.pipesCollide.setCollisionByExclusion(-1, true);
-        // setup world collliders
+        this.puzzleInitial.setCollisionByExclusion(-1, true);
+        // setup world colliders
         this.physics.add.collider(this.floor, player);
         this.physics.add.collider(this.pipesCollide, player);
         this.physics.add.collider(this.upPlatforms, player);
-        this.physics.add.collider(this.puzzleInitial, player);
+        this.puzzleCollider = this.physics.add.collider(this.puzzleInitial, player);
         this.physics.add.overlap (this.climbable, player);
         this.physics.add.overlap (this.spikes, player);
         // tint entire forground for the "fog of war" effect
@@ -201,7 +217,7 @@ class Level1 extends Phaser.Scene {
     }
 
     completed(){
-        if(this.water){ // if they shut off the power they can exit
+        if(this.water.visible){ // if they remove the water they can exit
             this.lastTime = this.currTime;
             this.textbox(player.x, player.y, 'Condition not met');
             this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});

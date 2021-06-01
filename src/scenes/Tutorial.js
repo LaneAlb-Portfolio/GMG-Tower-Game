@@ -59,23 +59,35 @@ class Tutorial extends Phaser.Scene {
         // "pointerout " == when pointer is NOT hovering on object
         // create invisible rectangle over interatables
         this.brainAttention = this.add.rectangle(6*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.brainAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'brain')});
+        this.brainAttention.setInteractive({cursor: 'url(./assets/pointers/BrainPointer.png), pointer'}).on('pointerdown', () => 
+        {this.textbox(player.x, player.y, 'brain')});
         this.brainAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
 
-        this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.endAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'condition not met')});
+        this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.endAttention.setInteractive().on('pointerdown', () => {
+            if(this.noPower){ } else{
+                this.textbox(player.x, player.y, 'condition not met');
+            }
+        });
         this.endAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.heartAttention = this.add.rectangle(this.mapWidthP - 11*this.tileWidth, 8*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.heartAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
+        this.heartAttention = this.add.rectangle(this.mapWidthP - 11*this.tileWidth, 8*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
+        this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.startAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.startAttention.setInteractive().on('pointerdown', () => {this.textbox(player.x, player.y, 'tutorial')});
+        this.startAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {this.textbox(player.x, player.y, 'tutorial')});
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
+        this.spikeAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.spikeAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {
+            this.textbox(player.x, player.y, 'spikes');
+        });
+        this.spikeAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
         this.lever = this.add.rectangle(4.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
-        this.lever.setInteractive().on('pointerup', () => {
+        this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
             this.attention.destroy();
             this.noPower = this.map.createLayer('Power Off', this.tileset, 0, 0);
         });
