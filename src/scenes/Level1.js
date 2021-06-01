@@ -97,7 +97,7 @@ class Level1 extends Phaser.Scene {
 
         // setup interactables within the scene and cursors
         // turn these into a prefab at some point
-        this.heartAttention = this.add.rectangle(11.5*this.tileWidth, 13*this.tileHeight, 192, 128, 0xFFFFF, 1);
+        this.heartAttention = this.add.rectangle(11.5*this.tileWidth, 13*this.tileHeight, 192, 128);//, 0xFFFFF, 1);
         this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
         this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
@@ -187,9 +187,6 @@ class Level1 extends Phaser.Scene {
         if(this.climbable.getTileAtWorldXY(player.x, player.y))  // if overlapping ladder then climb it
         {
             player.climb();
-        }
-        if(Phaser.Geom.Intersects.CircleToRectangle(this.light, this.water)){
-            console.log('overlapping');
         }
         /* can try collide tiles later or the actual overlaps
         this.physics.world.overlap(player, this.sidePlatforms, this.platformMovement('side'), null, this);

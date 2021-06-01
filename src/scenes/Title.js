@@ -4,49 +4,134 @@ class Title extends Phaser.Scene {
     }
 
     create() {
+        this.movementVelocity = 200;
+        this.currTime = this.time.now;
+        this.lastTime = -1000;
+        // Text Bubbles Prefab
+        this.tb = this.add.group(this);
+        this.boxMsgs = new TextBubbles();
         // background music
         backmusic = this.sound.add('runmp3',{
             mute: false,
-            volume: 0.8,
+            volume: 0.7,
             rate: 0.5,
             loop:true
         });
-        backmusic.play();
+        if(!backmusic.isPlaying){
+            backmusic.play();
+        }
         // Background
-        this.add.image(centerX, 0, 'brickBg').setOrigin(0).setTint(0xb1741a).setRotation(1.5708);
-        this.add.image(gameW, 0, 'brickBg').setOrigin(0).setTint(0xdf7544).setRotation(1.5708);
+        // Loading Tilemap
+        this.map     = this.make.tilemap({key: 'MainMenu'});
+        this.tileset = this.map.addTilesetImage('tilemap 2');
+        this.map.createStaticLayer('BG', this.tileset, 0, 0); 
+        this.floor        = this.map.createLayer('Ground', this.tileset, 0, 0); // make ground walkable
+        this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
+        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
+        this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0); // info graphics "on"
+        this.map.createLayer('Special State', this.tileset, 0, 0);
+        // for  ease of use
+        this.tileHeight = this.map.tileHeight;
+        this.tileWidth  = this.map.tileWidth;
+        this.mapHeightP = this.map.heightInPixels;
+        this.mapWidthP  = this.map.widthInPixels;
+        console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
+        console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
+
         // Title Txt
-        let title = this.add.text(centerX - 15, centerY - txtSpacing, 'Tower Demo', titleConfig).setOrigin(0.5).setTint(0x887255);
-        // Body
-        this.add.text(centerX, centerY + txtSpacing, 'Press W for Level Select', headerConfig).setOrigin(0.5);
-        this.add.text(centerX, gameH - txtSpacing*2, 'Space for Credits', headerConfig).setOrigin(0.5);
-        this.add.text(centerX, gameH - txtSpacing, 'GMG 2021', bodyConfig).setOrigin(0.5);
-        this.add.text(centerX, gameH - txtSpacing/2, 'Font by Style-7', bodyConfig).setOrigin(0.5);
-        // Mess with below so its cooler
-        this.tweens.add({
-            targets: title,
-            duration: 1500,
-            x: { from: centerX - 15, to: centerX + 15 },
-            yoyo: true,
-            repeat: -1,
-            onRepeat: function() {
-                this.cameras.main.shake(50, 0.025); //simple shake
-            },
-            onRepeatScope: this
+        this.add.text(10*this.tileWidth, 6*this.tileHeight, 'Living Demolition', headerConfig).setOrigin(0.5);
+        this.add.text(10*this.tileWidth, 6*this.tileHeight + 32, 'Use your mouse to Interact with Panels', bodyConfig).setOrigin(0.5);
+        this.add.text(46, gameH - txtSpacing/2, 'GMG 2021', bodyConfig).setOrigin(0.5).setScrollFactor(0);
+        this.add.text(75, gameH - txtSpacing/4, 'Font by Style-7', bodyConfig).setOrigin(0.5).setScrollFactor(0);
+
+        // interaction setup
+        this.startAttention = this.add.rectangle(10*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
+        {this.scene.start('select');});
+        this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.creditsAttention = this.add.rectangle(this.mapWidthP - 5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.creditsAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
+        {backmusic.stop(); this.scene.start('staticCredits');});
+        this.creditsAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.lever = this.add.rectangle(6.5*this.tileWidth, 2.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
+        this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
+            this.attention.destroy();
+            this.noPower = this.map.createLayer('Power off', this.tileset, 0, 0);
         });
 
+        // give platforms scene, x, y, endPoint, velocity, texture)
+        this.upPlatforms = new UpwordsPlat(this, this.tileWidth, this.mapHeightP - 2*this.tileHeight, 3*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
+        this.upPlatforms.setScale(0.5);
+        // player stuff here
+        let frameNames = this.anims.generateFrameNames('player',{
+            start: 1, end: 6, prefix: 'spacemanrun'
+        });
+        this.anims.create({
+            key: 'run',
+            frames: frameNames,
+            frameRate: 20,
+            repeat: -1
+        });
+        player = new Player(this, 10*this.tileWidth, this.mapHeightP - (2*this.tileHeight), 'player', 0);
+        player.setScale(1.8);
+        player.anims.play('run');
+
+        //camera things
+        //configuration
+        this.cameras.main.setBounds(0,0,this.mapWidthP,this.mapHeightP);
+        this.cameras.main.setZoom(1);
+        //have the camera follow the player
+        this.cameras.main.startFollow(player);
+        // setup collisions anything not of index below has collision ON
+        this.floor.setCollisionByExclusion(-1, true);
+        this.climbable.setCollisionByExclusion(-1, true);
+        // setup world collliders
+        this.physics.add.collider(this.floor, player);
+        this.physics.add.overlap (this.climbable, player);
+        this.physics.add.collider(this.upPlatforms, player);
+
         // set up cursor keys for title screen input
-        this.selectors = this.input.keyboard.addKeys({up:"W", space:"SPACE"});
+        cursors  = this.input.keyboard.createCursorKeys();
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE"});
     }
 
     update() {
-        if (Phaser.Input.Keyboard.JustDown(this.selectors.up)) {
-            // start play scene
-            this.scene.start('select');
+        player.update();
+        this.upPlatforms.update();
+        this.currTime = this.time.now; //update current time
+        if((movement.right.isUp || movement.left.isUp || movement.up.isUp || movement.down.isUp)
+           && !(movement.right.isDown || movement.left.isDown || movement.up.isDown || movement.down.isDown)
+           ){
+            player.anims.play('run');
         }
-        if (Phaser.Input.Keyboard.JustDown(this.selectors.space)) {
-            // start play scene
-            this.scene.start('staticCredits');
+        if(movement.jump.isDown && this.currTime - this.lastTime >= 1000){ // make jump only once
+            player.jump();
+            this.lastTime = this.currTime;
         }
+        if(this.climbable.getTileAtWorldXY(player.x, player.y)) 
+        {
+            player.climb();
+        }
+    }
+
+    textbox(x, y, objName){
+        //console.log("Txtbox being made for:" + objName);
+        let height = Phaser.Math.FloorTo((this.boxMsgs.messageLength(objName) * 16) / 100 );
+        //console.log("Expected wordWrap == " + height);
+        this.txtstyle = {
+            fontFamily: 'thinPixel', 
+            fontSize: '32px',
+            color: '#FFFFFF',
+            strokeThickness: 1,
+            stroke: '#000000',
+            backgroundColor: '#000000',
+            align: 'center',
+            fixedWidth:  100,
+            wordWrap: {width: 100}, // keep width the same as fixedWidth
+        }
+        this.tb.add(this.add.text(this.cameras.main.centerX, this.cameras.main.centerY-((height-1)*10) - 32, // clamp to the middle of the camera
+            this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 }

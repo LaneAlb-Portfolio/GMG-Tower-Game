@@ -45,7 +45,7 @@ class Tutorial extends Phaser.Scene {
         this.add.text(this.mapWidthP - 3.2*this.tileWidth, this.mapHeightP - (5*this.tileHeight),
             `Use A D to Move\nW and S To Climb\nSPACE to Jump`, popUpConfig).setOrigin(0.5);
         this.add.text(this.mapWidthP - 3.2*this.tileWidth, this.mapHeightP - (3.5*this.tileHeight), 
-            `Use your mouse to\ninteract\nwith objects around you`, popUpConfig).setOrigin(0.5);
+            `Remember to use your mouse`, popUpConfig).setOrigin(0.5);
         //scene puzzle things
         this.pointerX = 0;
         this.pointerY = 0;
@@ -71,16 +71,16 @@ class Tutorial extends Phaser.Scene {
         });
         this.endAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.heartAttention = this.add.rectangle(this.mapWidthP - 11*this.tileWidth, 8*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.heartAttention = this.add.rectangle(this.mapWidthP - 11*this.tileWidth, 8*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
         this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.startAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.startAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {this.textbox(player.x, player.y, 'tutorial')});
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.spikeAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.spikeAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.spikeAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {
             this.textbox(player.x, player.y, 'spikes');
         });
@@ -182,7 +182,7 @@ class Tutorial extends Phaser.Scene {
             fixedWidth:  100,
             wordWrap: {width: 100}, // keep width the same as fixedWidth
         }
-        this.tb.add(this.add.text(x, y-((height-1)*10) - 32, // clamp to the middle of the camera
+        this.tb.add(this.add.text(this.cameras.main.centerX, this.cameras.main.centerY-((height-1)*10) - 32, // clamp to the middle of the camera
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 }

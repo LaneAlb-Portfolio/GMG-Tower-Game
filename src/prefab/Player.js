@@ -26,7 +26,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.setFlipX(true);
         } else {
             this.setVelocityX(0);
-        }
+        } 
     }
 
     slow(){
@@ -43,7 +43,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     jump(){
-        this.setVelocityY(-500);
+        this.setVelocityY(-450);
     }
 
     setVelX(amount){this.setVelocityX(amount);}

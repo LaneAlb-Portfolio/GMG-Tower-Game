@@ -4,13 +4,22 @@ class Select extends Phaser.Scene {
     }
 
     create() {
+        // Loading Tilemap
+        this.map     = this.make.tilemap({key: 'MainMenu'});
+        this.tileset = this.map.addTilesetImage('tilemap 2');
+        this.map.createLayer('BG', this.tileset, -64, -64);
+        if(!backmusic.isPlaying){
+            backmusic.play();
+        }
         // Background
+        /*
         this.add.image(gameW+centerX-85, -centerX-84, 'brickBg').setOrigin(0).setTint(0xFF741a)
         .setRotation(1.5708).setScale(2.5); // 90 degrees in radians
         this.add.image(gameW+centerX-85, -centerX/2, 'brickBg').setOrigin(0).setTint(0x706010)
         .setRotation(1.5708).setScale(2.5); // 90 degrees in radians
         this.add.image(gameW+centerX-85, -centerX/2, 'brickBg').setOrigin(0).setTint(0xFFFFFF)
         .setRotation(1.5708).setScale(2.5).setAlpha(0.3); // 90 degrees in radians
+        */
         // setup level buttons
         this.tutorial = this.add.rectangle(centerX/3, centerY/3, 94, 94, 0x559060, 1);
         this.add.text(this.tutorial.getCenter().x,this.tutorial.getCenter().y, 'T', buttonConfg).setOrigin(0.5);
