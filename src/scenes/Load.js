@@ -6,19 +6,16 @@ class Load extends Phaser.Scene {
     preload() {
         this.load.path = './assets/';
         // BE REALLY GOOD WITH COMMENTS HERE
-        // LEVEL SELECT Assets
-        this.load.spritesheet('buttons', 'imgs/number-buttons-90x90.png', {frameWidth: 90, frameHeight: 90});
-        this.load.image('button2', 'imgs/tempButton2.png');
         // Foreground Tint Image
         this.load.image('tinter', 'imgs/screenTint.jpg');
         // Background Menu Image
         this.load.image('brickBg', 'imgs/spacefg.png');
-        // Tutorial Loadin Assets
-        // temp player
+        // ER Player
         this.load.atlas('player', 'imgs/spaceman.png', 'imgs/spaceman.json');
-        //temp Level background
-        this.load.image('tilemap', 'tilemaps/tilemap.png'); // load png
-        this.load.tilemapTiledJSON('tempAssetMap', 'tilemaps/Tutorial.json'); //load json
+        // Tilemap loading
+        this.load.image('tilemap 2', 'tilemaps/tilemap 2.png'); // load png
+        this.load.tilemapTiledJSON('tutorialMap', 'tilemaps/Tutorial.json'); //load json
+        this.load.tilemapTiledJSON('lvl1Map', 'tilemaps/Level1.json'); //load json
         this.load.image('bg', 'imgs/black.jpg');
         //temp faucet image
         this.load.image('faucet', "imgs/faucet.png");

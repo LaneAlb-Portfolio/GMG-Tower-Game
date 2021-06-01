@@ -42,7 +42,7 @@ class Select extends Phaser.Scene {
                 this.scene.start('tutorial');
                 break;
             case 'lvl1':
-                if(completed[1] != 0){
+                if(completed[0] != 0){
                     backmusic.stop();
                     this.scene.start('levelOne');
                 } else{ 
@@ -50,7 +50,7 @@ class Select extends Phaser.Scene {
                 }
                 break;
             case 'lvl2':
-                if(completed[2] != 0){
+                if(completed[1] != 0){
                     backmusic.stop();
                     this.scene.start('levelTwo');
                 } else{ 

@@ -11,7 +11,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         //this.setCollideWorldBounds(true);
         this.setDepth(1); // set z height to 
         this.setBlendMode('SCREEN');
-        this.setMaxVelocity(1000,500);
+        this.setMaxVelocity(1000,1000);
         this.setDragY(0);
         this.setBounce(0);
         this.setGravityY(1000);
@@ -19,10 +19,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     update() {
         // get movement based on input
         if(movement.right.isDown){
-            this.setVelocityX(1000);
+            this.setVelocityX(500);
             this.setFlipX(false);
         } else if(movement.left.isDown) {
-            this.setVelocityX(-1000);
+            this.setVelocityX(-500);
             this.setFlipX(true);
         } else {
             this.setVelocityX(0);

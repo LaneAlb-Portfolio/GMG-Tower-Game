@@ -11,12 +11,12 @@ class GameOver extends Phaser.Scene {
     }
 
     update() {
-        // wait for UP input to restart game
+        // wait for input
         if (Phaser.Input.Keyboard.JustDown(this.selector.w)) {
-            this.scene.start('select');
+            this.scene.start('title');
         }
         if (Phaser.Input.Keyboard.JustDown(this.selector.s)) {
-            this.scene.start('title');
+            this.scene.start('select');
         }
     }
 }

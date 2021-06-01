@@ -30,12 +30,13 @@ let player; // this makes referencing player object a bit cleaner
 let time;   // time in game, used for event triggers
 let cursors;
 let movement;
-let completed = [0,0,0,0,0]; // check for completed levels
+let completed = [1,0,0,0,0]; // check for completed levels
 let backmusic;
 // text configs use Font we want later
 // change or add more configs as needed
 let titleConfig = {fontFamily: 'thinPixel', fontSize: '128px', color: '#FFFFFF'};
 let headerConfig= {fontFamily: 'thinPixel', fontSize: '72px', color: '#FFFFFF'};
+let popUpConfig = {fontFamily: 'thinPixel', fontSize: '52px', color: '#FFFFFF', align: 'center'};
 let bodyConfig  = {fontFamily: 'thinPixel', fontSize: '36px', color: '#FFFFFF'};
 let subConfig   = {fontFamily: 'thinPixel', fontSize: '15px', color: '#FFFFFF'};
 let logoConfig  = {fontFamily: 'thinPixel', fontSize: '72px', backgroundColor: '#FFFFFF', color: '#000000'};
