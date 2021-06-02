@@ -192,7 +192,7 @@ class Tutorial extends Phaser.Scene {
             fixedWidth:  100,
             wordWrap: {width: 100}, // keep width the same as fixedWidth
         }
-        this.tb.add(this.add.text(this.cameras.main.centerX, this.cameras.main.centerY-((height-1)*10) - 32, // clamp to the middle of the camera
+        this.tb.add(this.add.text(this.cameras.main.centerX, (this.cameras.main.centerY-64)-(height), // clamp to the middle of the camera
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 }
