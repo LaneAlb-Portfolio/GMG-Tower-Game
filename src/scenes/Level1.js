@@ -3,7 +3,8 @@ class Level1 extends Phaser.Scene {
         super('levelOne');
     }
 
-    create(){ 
+    create(){
+        this.faucetOff = false;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
         this.lastTime = this.time.now;
@@ -16,10 +17,10 @@ class Level1 extends Phaser.Scene {
         this.map.createStaticLayer('BG', this.tileset, 0, 0); 
         this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0); // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
-        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);  // Everything behind player not in background
+        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);   // Everything behind player not in background
         this.pipesCollide = this.map.createLayer('Collide Pipes', this.tileset, 0, 0);
-        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);       // climbable objects
-        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);        // danger spikes
+        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);        // climbable objects
+        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);         // danger spikes
         this.puzzleInitial= this.map.createStaticLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
         this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0); // attention panels
 
@@ -47,7 +48,7 @@ class Level1 extends Phaser.Scene {
 
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.upPlatforms = new UpwordsPlat(this, 7*this.tileWidth, this.mapHeightP - 7*this.tileHeight, 7*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
-
+        this.upPlatforms.setScale(0.5);
         // bottom pipe is id 123 we put water particles here
         // add water emitter
         let waterfall = new Phaser.Geom.Line(player.x,player.y, player.x + 240, player.y);
@@ -61,26 +62,32 @@ class Level1 extends Phaser.Scene {
             emiteZone: {type: 'random', source: waterfall, quantity: 150},
         });
 
-        //drain plug
+        // drain plug
         // drain is index 109
-        //this.drains = this.map.findByIndex(109, 0, false, this.foreground);
+        // this.drains = this.map.findByIndex(109, 0, false, this.foreground);
         this.water  = this.add.rectangle (11*this.tileWidth, 4*this.tileHeight, 3*this.tileWidth, 4*this.tileHeight, 0xba4a34, 0.75).setOrigin(0);
         this.drainplgsprite = this.add.image(11*this.tileWidth, 8*this.tileHeight, 'drainplug').setOrigin(0); //add it to the scene
-        this.drainplgsprite.setScale(0.5); //scale it to the scene
+        this.drainplgsprite.setScale(0.5);   //scale it to the scene
         this.drainplgsprite.setAlpha(0.01);
         this.drainplgsprite.setInteractive({ // make sure that the object is clickable, shows hand, and enables dragablity
             cursor: 'url(./assets/pointers/DrainPointer.png), pointer',
         });
         this.drainplgsprite.on('pointerup',(pointer, dragX, dragY) => {// delete the object when let go and play sound
-            this.drainplgsprite.destroy();
-            this.water.setVisible(0);
-            this.solved = this.map.createLayer('Puzzle Solved', this.tileset, 0, 0);
-            this.puzzleCollider.destroy(); // destroy collision first
-            this.puzzleInitial.destroy(); 
-            this.tb.clear(true, true); // make sure the tooltip isnt left behind
-            this.drainSound = this.sound.add('drain');
-            this.drainSound.play();
-            this.time.delayedCall(1500, () => {this.drainSound.stop();}); // drain sound is a little bit to long
+            console.log(this.faucetOff);
+            if(this.faucetOff){
+                this.drainplgsprite.destroy();
+                this.water.setVisible(0);
+                this.puzzleSolved = this.map.createLayer('Puzzle Solved', this.tileset, 0, 0);
+                this.puzzleCollider.destroy(); // destroy collision first
+                this.puzzleInitial.setVisible(0); 
+                this.tb.clear(true, true);     // make sure the tooltip isnt left behind
+                this.drainSound = this.sound.add('drain');
+                this.drainSound.play();
+                this.time.delayedCall(1500, () => {this.drainSound.stop();}); // drain sound is a little bit to long
+            } else{
+                this.textbox(player.x, player.y, 'faucetOn');
+                this.time.delayedCall(2000, () => {this.tb.clear(true, true);}); // drain sound is a little bit to long
+            }
         });
         // ALL Pointer Hover Interactions
         // "pointerover" == when pointer is hovering on object
@@ -102,10 +109,15 @@ class Level1 extends Phaser.Scene {
         this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.startAttention = this.add.rectangle(this.mapWidthP - 5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.heartHint = this.add.rectangle(8.5*this.tileWidth, this.mapHeightP - 6.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
+        this.heartHint.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
+        this.heartHint.on('pointerover', () => {this.textbox(player.x, player.y, 'heart')});
+        this.heartHint.on('pointerout', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.startAttention = this.add.rectangle(this.mapWidthP - 2.5*this.tileWidth, this.mapHeightP - 1.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'});
-        this.startAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'lvl1')});
-        this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+        this.startAttention.on('pointerover', () => {this.textbox(player.x, player.y, 'lvl1')});
+        this.startAttention.on('pointerout', () =>  {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.lever = this.add.rectangle(13.5*this.tileWidth, 7.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerdown', () => { 
@@ -117,7 +129,8 @@ class Level1 extends Phaser.Scene {
             if(this.water.visible){
                 this.time.delayedCall(2500, () => { this.tb.clear(true, true); });
             } else {
-                this.badCodingPractice = this.map.createLayer('HideBecauseCodeNoWork', this.tileset, 0, 0);
+                this.puzzleSolved.setVisible(0); 
+                //this.badCodingPractice = this.map.createLayer('HideBecauseCodeNoWork', this.tileset, 0, 0);
                 this.puzzleDone = this.map.createLayer('Puzzle Done', this.tileset, 0, 0);
             }
         });
@@ -125,14 +138,15 @@ class Level1 extends Phaser.Scene {
         this.faucet.setInteractive().on('pointerup', () => { 
             // stop emitter
             console.log("faucet");
+            this.faucetOff = true;
             this.waterManager.destroy();
         });
 
-        //camera things
-        //configuration
+        // camera things
+        // configuration
         this.cameras.main.setBounds(0,0,this.mapWidthP,this.mapHeightP);
         this.cameras.main.setZoom(1);
-        //have the camera follow the player
+        // have the camera follow the player
         this.cameras.main.startFollow(player);
 
         // setup collisions anything not of index below has collision ON
@@ -159,7 +173,6 @@ class Level1 extends Phaser.Scene {
         this.light.visible = false;
 
         // set up cursor keys and movement keys
-        cursors  = this.input.keyboard.createCursorKeys();
         movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE"});
 
         //debug rendering
@@ -178,8 +191,14 @@ class Level1 extends Phaser.Scene {
         //fog of war around player
         this.rt.clear();
         this.rt.draw(this.light, player.x, player.y);
-        if(movement.jump.isDown){ // make jump only once
+        if((movement.right.isUp || movement.left.isUp || movement.up.isUp || movement.down.isUp)
+           && !(movement.right.isDown || movement.left.isDown || movement.up.isDown || movement.down.isDown)
+           ){
+            player.anims.play('run');
+        }
+        if(movement.jump.isDown && this.currTime - this.lastTime >= 1000){ // make jump only once
             player.jump();
+            this.lastTime = this.currTime;
         }
         if(this.spikes.getTileAtWorldXY(player.x, player.y)){ //if hit spike restart level
             this.restart();
@@ -243,7 +262,7 @@ class Level1 extends Phaser.Scene {
             fixedWidth:  100,
             wordWrap: {width: 100}, // keep width the same as fixedWidth
         }
-        this.tb.add(this.add.text(x, y-((height-1)*10) - 32, // clamp to the middle of the camera
-            this.boxMsgs.messageFind(objName), this.txtstyle).setOrigin(0,0).setScrollFactor(0) );
+        this.tb.add(this.add.text(this.cameras.main.centerX, this.cameras.main.centerY-((height-1)*10) - 32, // clamp to the middle of the camera
+            this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 }

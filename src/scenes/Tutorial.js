@@ -4,6 +4,7 @@ class Tutorial extends Phaser.Scene {
     }
 
     create() {
+        this.noPower = true;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
         this.lastTime = this.time.now;
@@ -16,11 +17,11 @@ class Tutorial extends Phaser.Scene {
         this.map.createStaticLayer('BG', this.tileset, 0, 0); 
         this.floor        = this.map.createStaticLayer('Grounds', this.tileset, 0, 0); // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
-        this.pipes        = this.map.createStaticLayer('Pipes', this.tileset, 0, 0);  // Everything behind player not in background
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
+        this.pipes        = this.map.createStaticLayer('Pipes', this.tileset, 0, 0);   // Everything behind player not in background
         this.spikes       = this.map.createLayer('Spikes', this.tileset, 0, 0);        // danger spikes
-        this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0); // info graphics "on"
-        // for  ease of use
+        this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0);  // info graphics "on"
+        // for ease of use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
         this.mapHeightP = this.map.heightInPixels;
@@ -60,27 +61,30 @@ class Tutorial extends Phaser.Scene {
         // create invisible rectangle over interatables
         this.brainAttention = this.add.rectangle(6*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.brainAttention.setInteractive({cursor: 'url(./assets/pointers/BrainPointer.png), pointer'}).on('pointerdown', () => 
-        {this.textbox(player.x, player.y, 'brain')});
+        {if(!this.NoPower){this.textbox(player.x, player.y, 'brain')}});
         this.brainAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
 
-        this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128, 0xFFFFF, 1);
+        this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.endAttention.setInteractive().on('pointerdown', () => {
-            if(this.noPower){ } else{
+            if(this.noPower){} 
+            else{
                 this.textbox(player.x, player.y, 'condition not met');
             }
         });
         this.endAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.heartAttention = this.add.rectangle(this.mapWidthP - 11*this.tileWidth, 8*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.heartAttention = this.add.rectangle(this.mapWidthP - 12*this.tileWidth, 8*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
-        this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
+        this.heartAttention.on('pointerdown', () => {if(!this.NoPower){this.textbox(player.x, player.y, 'heart');}});
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.startAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {this.textbox(player.x, player.y, 'tutorial')});
+        this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {
+            if(!this.NoPower){this.textbox(player.x, player.y, 'tutorial');}
+        });
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
-        this.spikeAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.spikeAttention = this.add.rectangle(19*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.spikeAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {
             this.textbox(player.x, player.y, 'spikes');
         });
@@ -89,7 +93,8 @@ class Tutorial extends Phaser.Scene {
         this.lever = this.add.rectangle(4.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
             this.attention.destroy();
-            this.noPower = this.map.createLayer('Power Off', this.tileset, 0, 0);
+            this.noPower = true;
+            this.powerOff = this.map.createLayer('Power Off', this.tileset, 0, 0);
         });
 
         //camera things
@@ -136,8 +141,14 @@ class Tutorial extends Phaser.Scene {
         this.rt.clear();
         this.rt.draw(this.light, player.x, player.y);
         //console.log(player.velocityY);
-        if(movement.jump.isDown){ // make jump only once
+        if((movement.right.isUp || movement.left.isUp || movement.up.isUp || movement.down.isUp)
+           && !(movement.right.isDown || movement.left.isDown || movement.up.isDown || movement.down.isDown)
+           ){
+            player.anims.play('run');
+        }
+        if(movement.jump.isDown && this.currTime - this.lastTime >= 1000){ // make jump only once
             player.jump();
+            this.lastTime = this.currTime;
         }
         if(this.spikes.getTileAtWorldXY(player.x, player.y)){
             this.restart();
@@ -151,15 +162,14 @@ class Tutorial extends Phaser.Scene {
         // check if player is at the exit door
         if((Phaser.Math.Within(player.x, this.mapWidthP - this.tileWidth, 64) && Phaser.Math.Within(player.y, 3*this.tileHeight, 128))
           && this.currTime - this.lastTime >= 2500){ // only trigger once every 2.5 seconds
-            if(this.noPower){ // if they shut off the power they can exit
+            if(true){ // previsouly was if this.NoPower for power off condition
                 completed[0] = 1;  //set completed tutorial level to true
                 this.scene.start('gameover');
-            } else {
-                console.log('exit');
+            }/* else {
                 this.lastTime = this.currTime;
                 this.textbox(player.x, player.y, 'Condition not met');
                 this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});
-            }
+            }*/
         }
     }
 

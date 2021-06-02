@@ -3,6 +3,7 @@ class TextBubbles {
         // add messages as needed
         // we can have any number of messages
         this.faucet = 'Click to Stop the flow';
+        this.faucetOn = 'The water is still coming out of the pipe';
         this.drain  = 'Click to Drain the Water';
         this.brain  = "This seems to supply power to the house";
         this.heart  = "This seems to move liquid around the pipes";
@@ -18,11 +19,13 @@ class TextBubbles {
         switch(objectName){
             case 'faucet':
                 return this.faucet;
+            case 'faucetOn':
+                return this.faucetOn;
             case 'drain':
                 return this.drain;
             case 'brain':
                 return this.brain;
-            case 'tut':
+            case 'tutorial':
                 return this.tut;
             case 'lvl1':
                 return this.level1;
@@ -45,6 +48,8 @@ class TextBubbles {
         switch(objectName){
             case 'faucet':
                 return this.faucet.length;
+            case 'faucetOn':
+                return this.faucetOn.length;
             case 'drain':
                 return this.drain.length;
             case 'brain':
