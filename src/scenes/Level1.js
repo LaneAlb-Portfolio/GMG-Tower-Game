@@ -262,7 +262,9 @@ class Level1 extends Phaser.Scene {
             fixedWidth:  100,
             wordWrap: {width: 100}, // keep width the same as fixedWidth
         }
-        this.tb.add(this.add.text(this.cameras.main.centerX, this.cameras.main.centerY-((height-1)*10) - 32, // clamp to the middle of the camera
+        // X is center of camera - width 
+        // Y is cameras current Y value + (center - height) to be above the player and give some extra space
+        this.tb.add(this.add.text(this.cameras.main.centerX - 50, this.cameras.main.y + (this.cameras.main.centerY/2 - 1.2*height),
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 }
