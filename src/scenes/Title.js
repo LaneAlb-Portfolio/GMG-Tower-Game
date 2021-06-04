@@ -30,7 +30,8 @@ class Title extends Phaser.Scene {
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
         this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0); // info graphics "on"
         this.map.createLayer('Special State', this.tileset, 0, 0);
-        // for  ease of use
+        // const bounds   = this.map.createLayer('Grounds for the Camera');
+        // for ease of use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
         this.mapHeightP = this.map.heightInPixels;
@@ -87,13 +88,13 @@ class Title extends Phaser.Scene {
         // setup collisions anything not of index below has collision ON
         this.floor.setCollisionByExclusion(-1, true);
         this.climbable.setCollisionByExclusion(-1, true);
+        //bounds.setCollisionByExclusion(-1, true);
         // setup world collliders
         this.physics.add.collider(this.floor, player);
         this.physics.add.overlap (this.climbable, player);
         this.physics.add.collider(this.upPlatforms, player);
-
+        //this.physics.add.collider(bounds, player);
         // set up cursor keys for title screen input
-        cursors  = this.input.keyboard.createCursorKeys();
         movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE"});
     }
 

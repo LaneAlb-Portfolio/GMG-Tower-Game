@@ -121,9 +121,8 @@ class Tutorial extends Phaser.Scene {
         // light around player
         this.light = this.add.circle(player.x, player.y, player.width*4, 0xffffff);
         this.light.visible = false;
-        // set up cursor keys and movement keys
-        cursors  = this.input.keyboard.createCursorKeys();
-        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE"});
+        // set up movement keys and restart
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R"});
 
         //debug rendering
         /*
