@@ -4,6 +4,17 @@ class Tutorial extends Phaser.Scene {
     }
 
     create() {
+        // add level music
+        this.bgm = this.sound.add('StomachAche',{
+            mute: false,
+            volume: 0.7,
+            rate: 0.5,
+            loop:true
+        });
+        if(!this.bgm.isPlaying){
+            this.bgm.play();
+        }
+
         this.noPower = true;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
