@@ -65,6 +65,21 @@ class Level1 extends Phaser.Scene {
         // drain plug
         // drain is index 109
         // this.drains = this.map.findByIndex(109, 0, false, this.foreground);
+        // add water and the water particle effect
+        // water == blood aethestically so its red
+        this.waterDrops = this.add.particles('waterdrop');
+        this.waterDrops.createEmitter({
+            x: 10.5*this.tileWidth,
+            y: 5*this.tileHeight,
+            lifespan: 500,
+            speed: { min: 150, max: 300 },
+            angle: { min: 330, max: 380 },
+            gravityY: 300,
+            scale: { start: 0.5, end: 0 },
+            tint: [0xFA0000, 0xFF5050],
+            quantity: 2,
+            blendMode: 'ADD'
+        });
         this.water  = this.add.rectangle (14*this.tileWidth - 5, 8*this.tileHeight, 3*this.tileWidth, 4*this.tileHeight, 0xba4a34, 0.75).setOrigin(0);
         this.water.angle = 180;
         this.tweens.add({
