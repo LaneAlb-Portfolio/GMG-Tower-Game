@@ -140,10 +140,8 @@ class Tutorial extends Phaser.Scene {
         this.rt.clear();
         this.rt.draw(this.light, player.x, player.y);
         //console.log(player.velocityY);
-        if((movement.right.isUp || movement.left.isUp || movement.up.isUp || movement.down.isUp)
-           && !(movement.right.isDown || movement.left.isDown || movement.up.isDown || movement.down.isDown)
-           ){
-            player.anims.play('run');
+        if(player.VelocityX == 0){
+            player.anims.pause('run');
         }
         if(movement.jump.isDown && this.currTime - this.lastTime >= 1000){ // make jump only once
             player.jump();
@@ -161,14 +159,14 @@ class Tutorial extends Phaser.Scene {
         // check if player is at the exit door
         if((Phaser.Math.Within(player.x, this.mapWidthP - this.tileWidth, 64) && Phaser.Math.Within(player.y, 3*this.tileHeight, 128))
           && this.currTime - this.lastTime >= 2500){ // only trigger once every 2.5 seconds
-            if(true){ // previsouly was if this.NoPower for power off condition
+            if(this.noPower){ // previsouly was if this.NoPower for power off condition
                 completed[0] = 1;  //set completed tutorial level to true
                 this.scene.start('gameover');
-            }/* else {
+            } else {
                 this.lastTime = this.currTime;
                 this.textbox(player.x, player.y, 'Condition not met');
                 this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});
-            }*/
+            }
         }
     }
 
@@ -178,7 +176,7 @@ class Tutorial extends Phaser.Scene {
 
     textbox(x, y, objName){
         //console.log("Txtbox being made for:" + objName);
-        let height = Phaser.Math.FloorTo((this.boxMsgs.messageLength(objName) * 16) / 100 );
+        let height = Phaser.Math.FloorTo((this.boxMsgs.messageLength(objName) * 16) / 100 ) + 1;
         //console.log("Expected wordWrap == " + height);
         this.txtstyle = {
             fontFamily: 'thinPixel', 
@@ -193,7 +191,7 @@ class Tutorial extends Phaser.Scene {
         }
         // X is center of camera - width 
         // Y is cameras current Y value + (center - height) to be above the player and give some extra space
-        this.tb.add(this.add.text(this.cameras.main.centerX - 50, this.cameras.main.y + (this.cameras.main.centerY/2 - 1.2*height),
+        this.tb.add(this.add.text(this.cameras.main.centerX - 50, this.cameras.main.y + (this.cameras.main.centerY/2 - 1*height),
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 }

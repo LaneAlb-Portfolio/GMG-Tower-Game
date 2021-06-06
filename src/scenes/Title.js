@@ -24,7 +24,7 @@ class Title extends Phaser.Scene {
         // Loading Tilemap
         this.map     = this.make.tilemap({key: 'MainMenu'});
         this.tileset = this.map.addTilesetImage('tilemap 2');
-        this.map.createStaticLayer('BG', this.tileset, 0, 0); 
+        this.map.createLayer('BG', this.tileset, 0, 0); 
         this.floor        = this.map.createLayer('Ground', this.tileset, 0, 0); // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
