@@ -49,15 +49,17 @@ class Title extends Phaser.Scene {
         this.add.text(75, gameH - txtSpacing/4, 'Font by Style-7', bodyConfig).setOrigin(0.5).setScrollFactor(0);
 
         // interaction setup
+        this.controlsAttention = this.add.rectangle(5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.controlsAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
+        {backmusic.stop(); this.controls();});
+
         this.startAttention = this.add.rectangle(10*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
         {this.scene.start('select');});
-        this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.creditsAttention = this.add.rectangle(this.mapWidthP - 5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.creditsAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
         {backmusic.stop(); this.scene.start('staticCredits');});
-        this.creditsAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.lever = this.add.rectangle(6.5*this.tileWidth, 2.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
@@ -104,7 +106,7 @@ class Title extends Phaser.Scene {
         this.physics.add.collider(this.upPlatforms, player);
         //this.physics.add.collider(bounds, player);
         // set up cursor keys for title screen input
-        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE"});
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", esc: "ESC"});
     }
 
     update() {
@@ -121,6 +123,9 @@ class Title extends Phaser.Scene {
         if(this.climbable.getTileAtWorldXY(player.x, player.y)) 
         {
             player.climb();
+        }
+        if(movement.esc.isDown){
+            this.popup.clear(true, true);
         }
     }
 
@@ -154,5 +159,14 @@ class Title extends Phaser.Scene {
 
         this.tb.add(this.add.text(this.cameras.main.centerX - 50, y,
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
+    }
+
+    controls(){
+        this.popup = this.add.group();
+        let back   = this.add.rectangle(centerX, centerY, 500, 475, 0x000000, 1).setOrigin(0.5).setScrollFactor(0);
+        back.setStrokeStyle(10, 0xFFFFFF);
+        let txt    = this.add.text(centerX, centerY, "Controls\nW\nA S D\nJump: Space\n\nEsc to close", buttonConfg).setOrigin(0.5).setScrollFactor(0);
+        this.popup.add(back);
+        this.popup.add(txt);
     }
 }
