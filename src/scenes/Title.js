@@ -29,8 +29,11 @@ class Title extends Phaser.Scene {
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
         this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0); // info graphics "on"
+        this.noPower = this.map.createLayer('Power off', this.tileset, 0, 0);
         this.map.createLayer('Special State', this.tileset, 0, 0);
         // const bounds   = this.map.createLayer('Grounds for the Camera');
+        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");        // grab spawn info
+        this.noPower.visible = false;
         // for ease of use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
@@ -59,7 +62,13 @@ class Title extends Phaser.Scene {
         this.lever = this.add.rectangle(6.5*this.tileWidth, 2.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
             this.attention.destroy();
-            this.noPower = this.map.createLayer('Power off', this.tileset, 0, 0);
+            if(!this.noPower.visible){ // if power is ON
+                this.noPower.visible = true;
+                this.attention.visible = false;
+            } else{ // let the player turn power back on
+                this.noPower.visible = false;
+                this.attention.visible = true;
+            }
         });
 
         // give platforms scene, x, y, endPoint, velocity, texture)
@@ -75,7 +84,7 @@ class Title extends Phaser.Scene {
             frameRate: 20,
             repeat: -1
         });
-        player = new Player(this, 10*this.tileWidth, this.mapHeightP - (2*this.tileHeight), 'player', 0);
+        player = new Player(this, spawnPoint.x, spawnPoint.y, 'player', 0);
         player.setScale(1.8);
         player.anims.play('run');
 

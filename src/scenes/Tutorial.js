@@ -21,6 +21,7 @@ class Tutorial extends Phaser.Scene {
         this.pipes        = this.map.createStaticLayer('Pipes', this.tileset, 0, 0);   // Everything behind player not in background
         this.spikes       = this.map.createLayer('Spikes', this.tileset, 0, 0);        // danger spikes
         this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0);  // info graphics "on"
+        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");        // grab spawn info
         // for ease of use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
@@ -39,7 +40,7 @@ class Tutorial extends Phaser.Scene {
             frameRate: 20,
             repeat: -1
         });
-        player = new Player(this, this.mapWidthP - 2*this.tileWidth, this.mapHeightP - (3*this.tileHeight), 'player', 0);
+        player = new Player(this, spawnPoint.x, spawnPoint.y, 'player', 0);
         player.setScale(1.8);
         player.anims.play('run');
         // temp text
