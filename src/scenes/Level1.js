@@ -4,7 +4,8 @@ class Level1 extends Phaser.Scene {
     }
 
     create(){
-        // add level music
+        // add level music 
+        /*
         this.bgm = this.sound.add('heartAtt',{
             mute: false,
             volume: 0.7,
@@ -13,7 +14,7 @@ class Level1 extends Phaser.Scene {
         });
         if(!this.bgm.isPlaying){
             this.bgm.play();
-        }
+        }*/
         this.faucetOff = false;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
