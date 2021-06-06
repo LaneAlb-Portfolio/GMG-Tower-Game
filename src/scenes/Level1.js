@@ -143,6 +143,11 @@ class Level1 extends Phaser.Scene {
         this.startAttention.on('pointerover', () => {this.textbox(player.x, player.y, 'lvl1')});
         this.startAttention.on('pointerout', () =>  {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
+
+        //Josh added door pointer, for the pupose of clicking on the door to either: let the player know to flip the switch or to open w/o flipping the switch
+        this.door = this.add.rectangle(14.5*this.tileWidth, 7*this.tileHeight, 16, 128);//, 0xFFFFF, 1);
+        this.door.setInteractive({cursor: 'url(./assets/pointers/DoorPointer.png), pointer'});
+
         this.lever = this.add.rectangle(13.5*this.tileWidth, 7.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerdown', () => { 
             if(this.water.visible){
@@ -159,7 +164,7 @@ class Level1 extends Phaser.Scene {
             }
         });
         this.faucet = this.add.rectangle(10.5*this.tileWidth, 7*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
-        this.faucet.setInteractive().on('pointerup', () => { 
+        this.faucet.setInteractive({cursor: 'url(./assets/pointers/FaucetPointer.png), pointer'}).on('pointerup', () => { //added in the faucet pointer just because
             // stop emitter
             console.log("faucet");
             this.faucetOff = true;

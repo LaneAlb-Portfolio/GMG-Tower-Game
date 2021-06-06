@@ -2,16 +2,33 @@ class TextBubbles {
     constructor(){
         // add messages as needed
         // we can have any number of messages
+
+        //tutorial
+        this.tut      = "Welcome to the tutorial! Explore and have fun.";
+        this.spikes   = "Beware of heights and spikes, they will kill you!";
+        this.brain    = "This is the brain, it powers everything here.";
+        //this.brain    = "Hello, Im the brain. I. HAVE. POWER!"; //this should be on the brain popup itself
+        this.heart    = "This is the heart, it supplies blood everywhere there is pipes.";
+        //this.heart    = "Hello Im... the heart... thump thump... thump thump"; //this should be on the heart popup itself
+        //this.exit = "You are nearing the end, normally this is where you would double check your game objectives.";
+
+        //level 1
+        //this.button1 = "Heart is causing problems, Worker needed.";
+        //this.button2 = "Liquid Leaking Elsewhere";
+        //this.heart1 = "thump thump... thump thump... thump thump..."
+        //this.brain1 = "bzzzzzzzzzzzzzzzzzzzzzzzzt"
+        this.faucetOn = 'Blood is still spewing out of the pipe.'; //intuiton 1:  when the player clicks no on the pipe first (ie. the drain, or the lever)
+        //this.drainOn = 'The room is still flooded with blood.'; intuiton 2: when the player hasn't opened the drain
+        //this.leverOn = 'The door won't open without flipping the switch'; intuition 3 (if we choose to keep it): when the player clicks the door and not the switch
         this.faucet   = 'Click to Stop the flow';
-        this.faucetOn = 'The water is still coming out of the pipe';
         this.drain    = 'Click to Drain the Water';
-        this.brain    = "This seems to supply power to the house";
-        this.heart    = "This seems to move liquid around the pipes";
+        
+        
         this.noExit   = "I still have things to do here...";
-        this.tut      = "I'll Need to shut off power to continue on";
+        
         this.level1   = "The Heart is out of control here";
         this.cantYet  = "I need to Drain this 'Water' first";
-        this.spikes   = "I better not touch those things";
+        
         this.elevator = "This must go somewhere";
         this.lever    = "This lever must do something";
     }
