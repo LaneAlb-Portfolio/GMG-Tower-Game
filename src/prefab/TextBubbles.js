@@ -3,6 +3,9 @@ class TextBubbles {
         // add messages as needed
         // we can have any number of messages
 
+        //Intuitive thoughts: when power is off
+        this.noPower = "Maybe I should turn the brain on first.";
+
         //tutorial
         this.tut      = "Welcome to the tutorial! Explore and have fun.";
         this.spikes   = "Beware of heights and spikes, they will kill you!";
@@ -18,7 +21,7 @@ class TextBubbles {
         //this.heart1 = "thump thump... thump thump... thump thump..."
         //this.brain1 = "bzzzzzzzzzzzzzzzzzzzzzzzzt"
         this.faucetOn = 'Blood is still spewing out of the pipe.'; //intuiton 1:  when the player clicks no on the pipe first (ie. the drain, or the lever)
-        //this.drainOn = 'The room is still flooded with blood.'; intuiton 2: when the player hasn't opened the drain
+        this.cantYet  = 'The room is still flooded with blood.'; //intuiton 2: when the player hasn't opened the drain
         //this.leverOn = 'The door won't open without flipping the switch'; intuition 3 (if we choose to keep it): when the player clicks the door and not the switch
         this.faucet   = 'Click to Stop the flow';
         this.drain    = 'Click to Drain the Water';
@@ -27,7 +30,7 @@ class TextBubbles {
         this.noExit   = "I still have things to do here...";
         
         this.level1   = "The Heart is out of control here";
-        this.cantYet  = "I need to Drain this 'Water' first";
+        
         
         this.elevator = "This must go somewhere";
         this.lever    = "This lever must do something";
