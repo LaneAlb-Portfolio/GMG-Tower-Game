@@ -262,9 +262,20 @@ class Level1 extends Phaser.Scene {
             fixedWidth:  100,
             wordWrap: {width: 100}, // keep width the same as fixedWidth
         }
-        // X is center of camera - width 
-        // Y is cameras current Y value + (center - height) to be above the player and give some extra space
-        this.tb.add(this.add.text(this.cameras.main.centerX - 50, this.cameras.main.y + (this.cameras.main.centerY/2 - 1.2*height),
+        // X is center of camera - width of message above
+        // Y is based on the current scroll factor of the camera
+        // if the scroll factor is > 0 or < gameH then we know the character is center of camera
+        // else he is either near the top or bottom respectively
+
+        if(this.cameras.main.scrollY < 480 && this.cameras.main.scrollY > 0){
+            y = this.cameras.main.centerY / 2 - (2*height);
+        } else if (this.cameras.main.scrollY == 0){
+            y = this.cameras.main.centerY / 2 - 1.2*height; // give some room above player head by padding height
+        } else { // camera at bottom of the map, character is there too
+            y = this.cameras.main.centerY;
+        }
+
+        this.tb.add(this.add.text(this.cameras.main.centerX - 50, y,
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 }

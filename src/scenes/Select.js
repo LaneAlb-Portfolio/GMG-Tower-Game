@@ -49,10 +49,12 @@ class Select extends Phaser.Scene {
         // switch case
         switch(buttonName){
             case 'tutorial':
+                this.hide();
                 backmusic.stop();
                 this.scene.start('tutorial');
                 break;
             case 'lvl1':
+                this.hide();
                 if(completed[0] != 0){
                     backmusic.stop();
                     this.scene.start('levelOne');
@@ -61,14 +63,11 @@ class Select extends Phaser.Scene {
                 }
                 break;
             case 'lvl2':
-                if(completed[1] != 0){
-                    backmusic.stop();
-                    this.scene.start('levelTwo');
-                } else{ 
-                    this.WiP.setVisible(1);
-                }
+                this.hide();
+                this.WiP.setVisible(1);
                 break;
             case 'back':
+                this.hide();
                 this.scene.start('title');
                 break;
             default:
@@ -76,18 +75,14 @@ class Select extends Phaser.Scene {
         }
     }
     
-    update() {
-        if(this.Access.visible || this.WiP.visible){
-            this.time.delayedCall(2000, () => { this.hide(); });
-        }
-    }
+    update() { }
 
     hide(){
         if(this.Access.visible){
             this.Access.setVisible(0);
         }
         if(this.WiP.visible){
-            this.WIP.setVisible(0);
+            this.WiP.setVisible(0);
         }
     }
 }
