@@ -123,7 +123,7 @@ class Tutorial extends Phaser.Scene {
         this.light.visible = false;
         // set up movement keys and restart
         movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R"});
-
+        
         //debug rendering
         /*
         const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -140,8 +140,8 @@ class Tutorial extends Phaser.Scene {
         this.rt.clear();
         this.rt.draw(this.light, player.x, player.y);
         //console.log(player.velocityY);
-        if(player.VelocityX == 0){
-            player.anims.pause('run');
+        if(movement.left.isUp && movement.right.isUp){
+            player.anims.play('run');
         }
         if(movement.jump.isDown && this.currTime - this.lastTime >= 1000){ // make jump only once
             player.jump();
@@ -167,6 +167,10 @@ class Tutorial extends Phaser.Scene {
                 this.textbox(player.x, player.y, 'Condition not met');
                 this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});
             }
+        }
+        // allow restarting
+        if(movement.restart.isDown){
+            this.restart();
         }
     }
 

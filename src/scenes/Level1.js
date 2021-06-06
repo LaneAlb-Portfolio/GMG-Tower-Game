@@ -191,9 +191,7 @@ class Level1 extends Phaser.Scene {
         //fog of war around player
         this.rt.clear();
         this.rt.draw(this.light, player.x, player.y);
-        if((movement.right.isUp || movement.left.isUp || movement.up.isUp || movement.down.isUp)
-           && !(movement.right.isDown || movement.left.isDown || movement.up.isDown || movement.down.isDown)
-           ){
+        if(movement.left.isUp && movement.right.isUp){
             player.anims.play('run');
         }
         if(movement.jump.isDown && this.currTime - this.lastTime >= 1000){ // make jump only once
@@ -207,12 +205,11 @@ class Level1 extends Phaser.Scene {
         {
             player.climb();
         }
-        /* can try collide tiles later or the actual overlaps
-        this.physics.world.overlap(player, this.sidePlatforms, this.platformMovement('side'), null, this);
-        this.physics.world.overlap(player, this.upPlatforms, this.platformMovement('up'), null, this);
-        the above didnt work, possibly interaction between tilemap and the actual collider?
-        not really sure just dont understand why it doesnt work, but automcatic moving platforms
-        will have to do */
+        // allow restarting
+        if(movement.restart.isDown){
+            this.restart();
+        }
+
         this.currTime = this.time.now; //update current time
         // check if player is at the exit door && reduce function calls overall using game clock
         if((Phaser.Math.Within(player.x, this.mapWidthP - this.tileWidth, 64) && Phaser.Math.Within(player.y, 3*this.tileHeight, 128))
@@ -238,8 +235,8 @@ class Level1 extends Phaser.Scene {
             this.textbox(player.x, player.y, 'Condition not met');
             this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});
         } else {
-            completed[1] = 1;  //set completed level to true
-            this.scene.start('gameover');
+           // completed[1] = 1;  2nd level not implemented
+            this.scene.start('credits');
         }
     }
 

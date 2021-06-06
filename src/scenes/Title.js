@@ -102,9 +102,7 @@ class Title extends Phaser.Scene {
         player.update();
         this.upPlatforms.update();
         this.currTime = this.time.now; //update current time
-        if((movement.right.isUp || movement.left.isUp || movement.up.isUp || movement.down.isUp)
-           && !(movement.right.isDown || movement.left.isDown || movement.up.isDown || movement.down.isDown)
-           ){
+        if(movement.left.isUp && movement.right.isUp){
             player.anims.play('run');
         }
         if(movement.jump.isDown && this.currTime - this.lastTime >= 1000){ // make jump only once
