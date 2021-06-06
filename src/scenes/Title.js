@@ -72,10 +72,26 @@ class Title extends Phaser.Scene {
                 this.attention.visible = true;
             }
         });
+        this.leverbutton = this.add.rectangle(6.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
+        this.leverbutton.setInteractive().on('pointerover', () => {
+            this.textbox(player.x, player.y, 'lever');
+        });
+        this.leverbutton.on('pointerout', () => {
+            this.tb.clear(true, true);
+        });
+
+        this.elevatorButton = this.add.rectangle(2.5*this.tileWidth, this.mapHeightP - 1.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
+        this.elevatorButton.setInteractive().on('pointerover', () => {
+            this.textbox(player.x, player.y, 'elevator');
+        });
+        this.elevatorButton.on('pointerout', () => {
+            this.tb.clear(true, true);
+        });
 
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.upPlatforms = new UpwordsPlat(this, this.tileWidth, this.mapHeightP - 2*this.tileHeight, 3*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
         this.upPlatforms.setScale(0.5);
+
         // player stuff here
         let frameNames = this.anims.generateFrameNames('player',{
             start: 1, end: 6, prefix: 'spacemanrun'
@@ -149,22 +165,22 @@ class Title extends Phaser.Scene {
         // if the scroll factor is > 0 or < gameH then we know the character is center of camera
         // else he is either near the top or bottom respectively
 
-        if(this.cameras.main.scrollY < 480 && this.cameras.main.scrollY > 0){
+        if(this.cameras.main.scrollY < 160 && this.cameras.main.scrollY > 0){
             y = this.cameras.main.centerY / 2 - (2*height);
         } else if (this.cameras.main.scrollY == 0){
             y = this.cameras.main.centerY / 2 - 1.2*height; // give some room above player head by padding height
         } else { // camera at bottom of the map, character is there too
             y = this.cameras.main.centerY;
         }
-
+        console.log(this.cameras.main.scrollY);
         this.tb.add(this.add.text(this.cameras.main.centerX - 50, y,
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
 
     controls(){
         this.popup = this.add.group();
-        let back   = this.add.rectangle(centerX, centerY, 500, 475, 0x000000, 1).setOrigin(0.5).setScrollFactor(0);
-        back.setStrokeStyle(10, 0xFFFFFF);
+        let back   = this.add.rectangle(centerX, centerY, 500, 475, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
+        back.setStrokeStyle(10, 0xAF2A20);
         let txt    = this.add.text(centerX, centerY, "Controls\nW\nA S D\nJump: Space\n\nEsc to close", buttonConfg).setOrigin(0.5).setScrollFactor(0);
         this.popup.add(back);
         this.popup.add(txt);

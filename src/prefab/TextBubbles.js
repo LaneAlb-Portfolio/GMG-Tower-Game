@@ -12,10 +12,13 @@ class TextBubbles {
         this.level1   = "The Heart is out of control here";
         this.cantYet  = "I need to Drain this 'Water' first";
         this.spikes   = "I better not touch those things";
+        this.elevator = "This must go somewhere";
+        this.lever    = "This lever must do something";
     }
 
     messageFind(objectName){
         // make sure to add your above message into the cases in this switch!
+        // dont need break; since we just return immediately
         switch(objectName){
             case 'faucet':
                 return this.faucet;
@@ -37,6 +40,10 @@ class TextBubbles {
                 return this.cantYet;
             case 'condition not met':
                 return this.noExit;
+            case 'elevator':
+                return this.elevator;
+            case 'lever':
+                return this.lever;
             default:
                 console.log('Txtbubbles invalid objectName returning empty string');
                 return '';
@@ -67,6 +74,10 @@ class TextBubbles {
                 return this.cantYet.length;
             case 'condition not met':
                 return this.noExit.length;
+            case 'elevator':
+                return this.elevator.length;
+            case 'lever':
+                return this.lever.length;
             default:
                 console.log('Txtbubbles invalid objectName for length find');
                 return 1;
