@@ -5,20 +5,20 @@ class Level1 extends Phaser.Scene {
 
     create(){
         // add level music 
-        /*
-        this.bgm = this.sound.add('heartAtt',{
+        this.bgm = this.sound.add('StomachAche',{
             mute: false,
-            volume: 0.7,
+            volume: 1,
             rate: 0.5,
             loop:true
         });
         if(!this.bgm.isPlaying){
             this.bgm.play();
-        }*/
+        }
         this.faucetOff = false;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
         this.lastTime = this.time.now;
+
         // Text Bubbles Prefab
         this.tb = this.add.group(this);
         this.boxMsgs = new TextBubbles();
@@ -26,17 +26,17 @@ class Level1 extends Phaser.Scene {
         this.map     = this.make.tilemap({key: 'lvl1Map'});
         this.tileset = this.map.addTilesetImage('tilemap 2');
         this.map.createStaticLayer('BG', this.tileset, 0, 0); 
-        this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0); // make ground walkable
+        this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0);       // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
-        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);   // Everything behind player not in background
+        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);         // Everything behind player not in background
         this.pipesCollide = this.map.createLayer('Collide Pipes', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);        // climbable objects
         this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);         // danger spikes
         this.puzzleInitial= this.map.createStaticLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
         this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0); // attention panels
-        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");        // grab spawn info
+        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START"); // grab spawn info
 
-        // for  ease of use
+        // for ease of tilemap use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
         this.mapHeightP = this.map.heightInPixels;
@@ -61,23 +61,20 @@ class Level1 extends Phaser.Scene {
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.upPlatforms = new UpwordsPlat(this, 7*this.tileWidth, this.mapHeightP - 7*this.tileHeight, 7*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
         this.upPlatforms.setScale(0.5);
-        // bottom pipe is id 123 we put water particles here
-        // add water emitter
-        let waterfall = new Phaser.Geom.Line(player.x,player.y, player.x + 240, player.y);
-        this.waterManager = this.add.particles('waterdrop');
-        this.waterManager.createEmitter({
-            gavityY: 150,
-            lifespan: 1500,
-            alpha: {start: 1, end: 0.01},
-            scale: 5,
-            tint: [0x03bafc, 0x1384ad, 0x325ed9, 0x6186ed, 0x1269b0], // blue tints
-            emiteZone: {type: 'random', source: waterfall, quantity: 150},
-        });
-
+        
         // drain plug
         // drain is index 109
         // this.drains = this.map.findByIndex(109, 0, false, this.foreground);
-        this.water  = this.add.rectangle (11*this.tileWidth, 4*this.tileHeight, 3*this.tileWidth, 4*this.tileHeight, 0xba4a34, 0.75).setOrigin(0);
+        this.water  = this.add.rectangle (14*this.tileWidth - 5, 8*this.tileHeight, 3*this.tileWidth, 4*this.tileHeight, 0xba4a34, 0.75).setOrigin(0);
+        this.water.angle = 180;
+        this.tweens.add({
+            targets: this.water,
+            scaleY: 1.025,
+            x: 14*this.tileWidth,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
         this.drainplgsprite = this.add.image(11*this.tileWidth, 8*this.tileHeight, 'drainplug').setOrigin(0); //add it to the scene
         this.drainplgsprite.setScale(0.5);   //scale it to the scene
         this.drainplgsprite.setAlpha(0.01);
@@ -275,15 +272,15 @@ class Level1 extends Phaser.Scene {
         // Y is based on the current scroll factor of the camera
         // if the scroll factor is > 0 or < gameH then we know the character is center of camera
         // else he is either near the top or bottom respectively
-
-        if(this.cameras.main.scrollY < 480 && this.cameras.main.scrollY > 0){
+        // scrollY < NUMBER depends on the level so change accordingly
+        if(this.cameras.main.scrollY < 800 && this.cameras.main.scrollY > 0){
             y = this.cameras.main.centerY / 2 - (2*height);
         } else if (this.cameras.main.scrollY == 0){
             y = this.cameras.main.centerY / 2 - 1.2*height; // give some room above player head by padding height
         } else { // camera at bottom of the map, character is there too
             y = this.cameras.main.centerY;
         }
-
+        console.log(this.cameras.main.scrollY);
         this.tb.add(this.add.text(this.cameras.main.centerX - 50, y,
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }

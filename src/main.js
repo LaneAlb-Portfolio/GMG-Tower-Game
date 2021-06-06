@@ -30,7 +30,7 @@ let player; // this makes referencing player object a bit cleaner
 let time;   // time in game, used for event triggers
 let cursors;
 let movement;
-let completed = [0,0,0,0,0]; // check for completed levels
+let completed = [1,0,0,0,0]; // check for completed levels
 let backmusic;
 // text configs use Font we want later
 // change or add more configs as needed

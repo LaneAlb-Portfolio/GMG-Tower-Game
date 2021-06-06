@@ -19,22 +19,19 @@ class Load extends Phaser.Scene {
         this.load.tilemapTiledJSON('lvl1Map', 'tilemaps/Level1.json'); //load json
         this.load.tilemapTiledJSON('lvl2Map', 'tilemaps/Level2.json');
         this.load.image('bg', 'imgs/black.jpg');
-        //temp faucet image
-        this.load.image('faucet', "imgs/faucet.png");
         //temp drain plug image
         this.load.image('drainplug','imgs/drain_plug.png');
         // waterdrops
         this.load.image('waterdrop', 'imgs/Water Drop.png');
         // moving platform
         this.load.image('mPlat', 'tilemaps/MovingPlat.png');
-        // running soundtrack
-        this.load.audio('runmp3','sound/EndlessRunSong.mp3');
         // sounds
+        this.load.audio('runmp3','sound/EndlessRunSong.mp3');
         this.load.audio('faucet','sound/Turning Off Faucet.mp3');
         this.load.audio('waterrun','sound/Running Water.mp3');
         this.load.audio('drain','sound/Water Drain.mp3');
-        this.load.audio('heartAtt','sound/HeartAttackv1.mp3');
-        this.load.audio('StomachAche','sound/StomachAche.mp3');
+        this.load.audio('heartAtt','sound/HeartAttackv1.wav');
+        this.load.audio('StomachAche','sound/StomachAche.wav');
         // fancified loading screen stuff below
         let width  = this.cameras.main.width;
         let height = this.cameras.main.height;
