@@ -163,7 +163,7 @@ class Level1 extends Phaser.Scene {
             // stop emitter
             console.log("faucet");
             this.faucetOff = true;
-            this.waterManager.destroy();
+            this.waterDrops.destroy();
         });
 
         // camera things

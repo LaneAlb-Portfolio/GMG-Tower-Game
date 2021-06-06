@@ -22,24 +22,34 @@ class Select extends Phaser.Scene {
         this.tutorial.setStrokeStyle(4, 0x545454);
         this.add.text(this.tutorial.getCenter().x,this.tutorial.getCenter().y, 'T', buttonConfg).setOrigin(0.5);
 
-        this.lvl1     = this.add.rectangle(centerX, centerY/3, 94, 94, 0x7da4e3, 1);
+        this.lvl1  = this.add.rectangle(centerX, centerY/3, 94, 94, 0x7da4e3, 1);
+        this.l1Txt = this.add.text(centerX + 5,this.lvl1.getCenter().y, '1', buttonConfg).setOrigin(0.5);
         this.lvl1.setStrokeStyle(4, 0x545454);
-        this.add.text(centerX,this.lvl1.getCenter().y, '1', buttonConfg).setOrigin(0.5);
 
-        this.lvl2     = this.add.rectangle(gameW - centerX/3, centerY/3, 94, 94, 0x704070, 1);
+        this.lvl2  = this.add.rectangle(gameW - centerX/3, centerY/3, 94, 94, 0x704070, 1);
+        this.l2Txt = this.add.text(this.lvl2.getCenter().x + 5,this.lvl2.getCenter().y, '2', buttonConfg).setOrigin(0.5);
         this.lvl2.setStrokeStyle(4, 0x545454);
-        this.add.text(this.lvl2.getCenter().x,this.lvl2.getCenter().y, '2', buttonConfg).setOrigin(0.5);
         
         //setup click events
         this.tutorial.setInteractive().on('pointerdown', () => {this.down('tutorial')});
-        this.lvl1.setInteractive().on('pointerdown', () => {this.down('lvl1')});
-        this.lvl2.setInteractive().on('pointerdown', () => {this.down('lvl2')});
-        this.point.setInteractive().on('pointerdown', () => {this.down('back')});
-        this.body.setInteractive().on('pointerdown', () => {this.down('back')});
+        this.lvl1 .setInteractive().on('pointerdown',  ()   => {this.down('lvl1')});
+        this.lvl2 .setInteractive().on('pointerdown',  ()   => {this.down('lvl2')});
+        this.point.setInteractive().on('pointerdown',  ()   => {this.down('back')});
+        this.body .setInteractive().on('pointerdown',  ()   => {this.down('back')});
 
         // Cannot Access Level Text
         this.Access = this.add.text(centerX,gameH - txtSpacing, 'Cannot Access this level', headerConfig).setOrigin(0.5).setVisible(0);
         this.WiP    = this.add.text(centerX,gameH - txtSpacing, 'Not Available Yet', headerConfig).setOrigin(0.5).setVisible(0);
+
+        // level completion checks
+        if(completed[0] == 0){ // this means tutorial is not done
+            // grey X on lvl1
+            this.l1Txt.tint = 0x525252;
+        }
+        if(completed[1] == 0){ // this means lvl1 is not done
+            // grey X on lvl2
+            this.l2Txt.tint = 0x525252;
+        }
     }
 
     down(buttonName){
