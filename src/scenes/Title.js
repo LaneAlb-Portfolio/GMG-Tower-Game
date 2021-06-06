@@ -29,7 +29,7 @@ class Title extends Phaser.Scene {
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
         this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0); // info graphics "on"
-        this.noPower = this.map.createLayer('Power off', this.tileset, 0, 0);
+        this.noPower      = this.map.createLayer('Power off', this.tileset, 0, 0);
         this.map.createLayer('Special State', this.tileset, 0, 0);
         // const bounds   = this.map.createLayer('Grounds for the Camera');
         const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");        // grab spawn info
