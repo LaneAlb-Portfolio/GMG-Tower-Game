@@ -244,8 +244,10 @@ class Tutorial extends Phaser.Scene {
         } else { // camera at bottom of the map, character is there too
             y = this.cameras.main.centerY;
         }
-
-        this.tb.add(this.add.text(this.cameras.main.centerX - 50, y,
-            this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
+        let txt = this.add.text(this.cameras.main.centerX - 50, y, this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0).setDepth(1);
+        let bckg = this.add.rectangle(this.cameras.main.centerX - 50, y, txt.displayWidth, txt.displayHeight, 0x545454, 1).setOrigin(0,0).setScrollFactor(0);
+        bckg.setStrokeStyle(2, 0xAF2A20);
+        this.tb.add(bckg);
+        this.tb.add(txt);
     }
 }
