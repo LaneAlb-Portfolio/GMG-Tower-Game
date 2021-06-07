@@ -18,19 +18,19 @@ class TextBubbles {
         this.but      = "Hello I am a button, you don't need to click me to read me";
         this.spikes   = "Beware of the spikes, they will kill you!";
         this.brain    = "This is the brain, it powers everything here.";
-        this.brain0    = "Hello, Im the brain. I. HAVE. POWER!"; //this should be on the brain popup itself
+        this.brain0   = "Hello, Im the brain. I. HAVE. POWER!"; //this should be on the brain popup itself
         this.heart    = "This is the heart, it supplies blood through pipes.";
-        this.heart0    = "Hello Im... the heart... thump thump... thump thump"; //this should be on the heart popup itself
-        this.exit = "You are nearing the end, normally this is where you would double check your game objectives.";
+        this.heart0   = "Hello Im... the heart... thump thump... thump thump"; //this should be on the heart popup itself
+        this.exit     = "This is where you can double check your game objectives.";
 
         //level 1
-        this.button1 = "Heart is causing problems, Worker needed.";
-        this.button2 = "Liquid Leaking Elsewhere";
-        this.heart1 = "thump thump... thump thump... thump thump...";
-        this.brain1 = "bzzt.. bzzt.. bzzt..";
+        this.button1  = "Heart is causing problems, Worker needed.";
+        this.button2  = "Liquid Leaking Elsewhere";
+        this.heart1   = "thump thump... thump thump...";
+        this.brain1   = "bzzt.. bzzt.. bzzt..";
         this.faucetOn = 'Blood is still spewing out of the pipe.'; //intuiton 1:  when the player clicks no on the pipe first (ie. the drain, or the lever)
         this.cantYet  = 'The room is still flooded with blood.'; //intuiton 2: when the player hasn't opened the drain
-        this.leverOn = "The door won't open without flipping the switch"; //intuition 3 (if we choose to keep it): when the player clicks the door and not the switch
+        this.leverOn  = "The door won't open without flipping the switch"; //intuition 3 (if we choose to keep it): when the player clicks the door and not the switch
         
         //level 2 things
         //this.noExit   = "I still have things to do here...";
@@ -84,11 +84,9 @@ class TextBubbles {
                 return this.cantYet;
             case 'leverOn':
                     return this.leverOn;
-            
-            //non level things
-            //case 'condition not met':
-                //return this.noExit;
-            
+            // puzzle not solved
+            case 'condition not met':
+                return this.noExit;
 
             default:
                 console.log('Txtbubbles invalid objectName returning empty string');

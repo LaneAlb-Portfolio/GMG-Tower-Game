@@ -122,7 +122,6 @@ class Title extends Phaser.Scene {
                 this.brainsound.play()}
             this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
 
-
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.upPlatforms = new UpwordsPlat(this, this.tileWidth, this.mapHeightP - 2*this.tileHeight, 3*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
         this.upPlatforms.setScale(0.5);
@@ -140,7 +139,7 @@ class Title extends Phaser.Scene {
         player = new Player(this, spawnPoint.x, spawnPoint.y - 64, 'worker', 0);
         player.setScale(0.6); // the character is a tad big compared to tiles
         player.anims.play('run');
-        console.log(player.alpha);
+        //console.log(player.alpha);
         //camera things
         //configuration
         this.cameras.main.setBounds(0,0,this.mapWidthP,this.mapHeightP);
@@ -151,13 +150,11 @@ class Title extends Phaser.Scene {
         this.floor.setCollisionByExclusion(-1, true);
         this.climbable.setCollisionByExclusion(-1, true);
         bounds.setCollisionByExclusion(-1, true);
-        //bounds.setCollisionByExclusion(-1, true);
         // setup world collliders
         this.physics.add.collider(bounds, player);
         this.physics.add.collider(this.floor, player);
         this.physics.add.overlap (this.climbable, player);
         this.physics.add.collider(this.upPlatforms, player);
-        //this.physics.add.collider(bounds, player);
         // set up cursor keys for title screen input
         movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", esc: "ESC"});
     }

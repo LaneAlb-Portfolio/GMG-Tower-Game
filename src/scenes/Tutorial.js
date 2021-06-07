@@ -175,7 +175,7 @@ class Tutorial extends Phaser.Scene {
         this.cover.mask = new Phaser.Display.Masks.BitmapMask(this, this.rt);
         this.cover.mask.invertAlpha = true;
         // light around player
-        this.light = this.add.circle(player.x, player.y, player.width*4, 0xffffff);
+        this.light = this.add.circle(player.x, player.y, player.width*2, 0xffffff);
         this.light.visible = false;
 
         // set up movement keys and restart
@@ -291,9 +291,9 @@ class Tutorial extends Phaser.Scene {
         // else he is either near the top or bottom respectively
         // scrollY < NUMBER depends on the level so change accordingly
         if(this.cameras.main.scrollY < 480 && this.cameras.main.scrollY > 0){
-            y = this.cameras.main.centerY / 2 - (2*height);  // give some room above player head by padding height
+            y = this.cameras.main.centerY / 2 - (2.5*height);  // give some room above player head by padding height
         } else if (this.cameras.main.scrollY == 0){
-            y = this.cameras.main.centerY / 2 - 1.2*height;
+            y = this.cameras.main.centerY / 2 - 1.3*height;
         } else { // camera at bottom of the map, character is there too
             y = this.cameras.main.centerY;
         }
