@@ -185,7 +185,7 @@ class Title extends Phaser.Scene {
         this.popup = this.add.group();
         let back   = this.add.rectangle(centerX, centerY, 500, 475, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
         back.setStrokeStyle(10, 0xAF2A20);
-        let txt    = this.add.text(centerX, centerY, "Controls\nW\nA S D\nJump: Space\n\nEsc to close", buttonConfg).setOrigin(0.5).setScrollFactor(0);
+        let txt    = this.add.text(centerX, centerY, "Controls\nW\nA S D\nJump: Space\nMouse1: Click\nEsc to close", buttonConfg).setOrigin(0.5).setScrollFactor(0);
         this.popup.add(back);
         this.popup.add(txt);
     }
