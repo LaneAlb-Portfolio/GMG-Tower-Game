@@ -26,11 +26,16 @@ class Load extends Phaser.Scene {
         this.load.image('mPlat', 'tilemaps/MovingPlat.png');
         // sounds
         this.load.audio('runmp3','sound/EndlessRunSong.mp3');
-        this.load.audio('faucet','sound/Turning Off Faucet.mp3');
+        this.load.audio('faucet','sound/Wheel Turn.mp3');
         this.load.audio('waterrun','sound/Running Water.mp3');
         this.load.audio('drain','sound/Water Drain.mp3');
         this.load.audio('heartAtt','sound/HeartAttackv1.wav');
         this.load.audio('StomachAche','sound/StomachAche.wav');
+        this.load.audio('heartbeat','sound/Heartbeat.mp3');
+        this.load.audio('poweringon','sound/Power up 2.mp3');
+        this.load.audio('poweringdown','sound/Power down.mp3');
+        this.load.audio('leversfx','sound/Lever Pull.mp3');
+        this.load.audio('brainsfx','sound/Spooky Brain Whirls.mp3');
         // fancified loading screen stuff below
         let width  = this.cameras.main.width;
         let height = this.cameras.main.height;

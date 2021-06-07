@@ -132,7 +132,7 @@ class Tutorial extends Phaser.Scene {
         this.light.visible = false;
 
         // set up movement keys and restart
-        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R", esc:"ESC"});
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R", menu:"M", esc:"ESC"});
 
         //debug rendering
         /*
@@ -188,9 +188,19 @@ class Tutorial extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(movement.restart)){
             this.restart();
         }
+    // allow restarting
+        if(Phaser.Input.Keyboard.JustDown(movement.menu)){
+            this.menu();
+        }
+        //Pause menu overlay
         if(Phaser.Input.Keyboard.JustDown(movement.esc)){
             this.pauseMenu();
         }
+    }
+
+    menu(){
+        this.bgm.stop();
+        this.scene.start('title');
     }
 
     restart(){
@@ -204,10 +214,10 @@ class Tutorial extends Phaser.Scene {
             this.popup.clear(true, true);
         } else{
             this.popup = this.add.group();
-            let back   = this.add.rectangle(135, 70, 250, 125, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
+            let back   = this.add.rectangle(135, 85, 230, 140, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
             back.setStrokeStyle(5, 0xAF2A20);
             let txt    = this.add.text(back.x, back.y, 
-            "Movement: W A S D\nJump: Space\nRestart: R\nMouse1: Interact\nEsc to close", 
+            "Movement: W A S D\nJump: Space\nRestart: R\nInteract: Mouse1\nMain Menu: M\nEsc to close", 
             bodyConfig).setOrigin(0.5).setScrollFactor(0);
             back.alpha = 0.7;
             txt.alpha  = 0.7;

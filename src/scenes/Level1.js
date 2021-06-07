@@ -29,13 +29,13 @@ class Level1 extends Phaser.Scene {
         this.map.createLayer('BG', this.tileset, 0, 0); 
         this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0);         // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
+        this.organs       = this.map.createLayer('Brain and Heart', this.tileset, 0, 0); // organs
         this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);           // Everything behind player not in background
         this.pipesCollide = this.map.createLayer('Collide Pipes', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);          // climbable objects
         this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);           // danger spikes
         this.puzzleInitial= this.map.createLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
         this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0);   // attention panels
-        this.organs       = this.map.createLayer('Brain and Heart', this.tileset, 0, 0); // organs
         const bounds      = this.map.createLayer('Grounds for the Camera', this.tileset, 0, 0);
         const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");   // grab spawn info
 
@@ -132,22 +132,24 @@ class Level1 extends Phaser.Scene {
         // ALL Pointer Hover Interactions
         // "pointerover" == when pointer is hovering on object
         // "pointerout " == when pointer is NOT hovering on object
-        this.drainplgsprite.on('pointerover', (pointer) => {
-            let x = this.drainplgsprite.x ;
-            let y = this.drainplgsprite.y;
-            y = y - 64;
-            this.textbox(x, y, 'drain');
-        });
-        this.drainplgsprite.on('pointerout', (pointer) => {
-            this.tb.clear(true, true);
-        });
+        // this.drainplgsprite.on('pointerover', (pointer) => {
+        //     let x = this.drainplgsprite.x ;
+        //     let y = this.drainplgsprite.y;
+        //     y = y - 64;
+        //     this.textbox(x, y, 'drain');
+        // });
+        // this.drainplgsprite.on('pointerout', (pointer) => {
+        //     this.tb.clear(true, true);
+        // });
 
         // setup interactables within the scene and cursors
         // turn these into a prefab at some point
         this.heartAttention = this.add.rectangle(11.5*this.tileWidth, 13*this.tileHeight, 192, 128);//, 0xFFFFF, 1);
         this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
         this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
-        this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+        this.heartAttention.on('pointerup', () => {
+            this.heartBeat= this.sound.add('heartbeat')
+            this.heartBeat.play(),this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.heartHint = this.add.rectangle(8.5*this.tileWidth, this.mapHeightP - 6.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.heartHint.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
@@ -174,13 +176,18 @@ class Level1 extends Phaser.Scene {
             if(this.water.visible){
                 this.time.delayedCall(2500, () => { this.tb.clear(true, true); });
             } else {
+                this.leverSound = this.sound.add ('leversfx');
+                this.leverSound.play();
                 this.puzzleSolved.setVisible(0); 
                 //this.badCodingPractice = this.map.createLayer('HideBecauseCodeNoWork', this.tileset, 0, 0);
                 this.puzzleDone = this.map.createLayer('Puzzle Done', this.tileset, 0, 0);
+                this.door.setVisible(0);
             }
         });
         this.faucet = this.add.rectangle(10.5*this.tileWidth, 7*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.faucet.setInteractive({cursor: 'url(./assets/pointers/FaucetPointer.png), pointer'}).on('pointerup', () => { //added in the faucet pointer just because
+            this.faucetSound = this.sound.add('faucet');
+            this.faucetSound.play();
             // stop emitter
             console.log("faucet");
             this.faucetOff = true;
@@ -220,7 +227,7 @@ class Level1 extends Phaser.Scene {
         this.light.visible = false;
 
         // set up movement keys and restart
-        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R", esc:"ESC"});
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R", menu:"M", esc:"ESC"});
 
         //debug rendering
         /*
@@ -264,6 +271,10 @@ class Level1 extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(movement.esc)){
             this.pauseMenu();
         }
+        // quit to menu
+        if(Phaser.Input.Keyboard.JustDown(movement.menu)){
+            this.menu();
+        }
         this.currTime = this.time.now; //update current time
         // check if player is at the exit door && reduce function calls overall using game clock
         if((Phaser.Math.Within(player.x, this.mapWidthP - this.tileWidth, 64) && Phaser.Math.Within(player.y, 3*this.tileHeight, 128))
@@ -296,10 +307,10 @@ class Level1 extends Phaser.Scene {
             this.popup.clear(true, true);
         } else{
             this.popup = this.add.group();
-            let back   = this.add.rectangle(135, 70, 250, 125, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
+            let back   = this.add.rectangle(135, 85, 230, 140, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
             back.setStrokeStyle(5, 0xAF2A20);
             let txt    = this.add.text(back.x, back.y, 
-            "Movement: W A S D\nJump: Space\nRestart: R\nMouse1: Interact\nEsc to close", 
+            "Movement: W A S D\nJump: Space\nRestart: R\nInteract: Mouse1\nMain Menu: M\nEsc to close", 
             bodyConfig).setOrigin(0.5).setScrollFactor(0);
             back.alpha = 0.7;
             txt.alpha  = 0.7;
@@ -307,6 +318,11 @@ class Level1 extends Phaser.Scene {
             this.popup.add(txt);
         }
         this.pause = !this.pause;
+    }
+
+    menu(){
+        this.bgm.stop();
+        this.scene.start('title');
     }
 
     restart(){
