@@ -70,12 +70,10 @@ class Level1 extends Phaser.Scene {
         this.sparks.createEmitter({
             x: 13*this.tileWidth,
             y: 4.5*this.tileHeight,
-            lifespan: 50,
-            speed: { min: 150, max: 300 },
-            gravityY: 300,
-            scale: { start: 0.5 },
+            lifespan: 150,
+            speed: { min: 25, max: 375 },
+            scale: { start: 0.5 , end: 0},
             tint: [0xe9f024],
-            quantity: 1,
             blendMode: 'ADD',
         });
 
@@ -116,6 +114,7 @@ class Level1 extends Phaser.Scene {
         this.drainplgsprite.on('pointerup',(pointer, dragX, dragY) => {// delete the object when let go and play sound
             console.log(this.faucetOff);
             if(this.faucetOff){
+                this.sparks.destroy();
                 this.drainplgsprite.destroy();
                 this.water.setVisible(0);
                 this.puzzleSolved = this.map.createLayer('Puzzle Solved', this.tileset, 0, 0);
@@ -254,7 +253,7 @@ class Level1 extends Phaser.Scene {
             player.climb();
         }
         // this allows the player to "swim" in the blood
-        if(player.x >= 11*this.tileWidth && player.y <= 8*this.tileHeight){
+        if( (player.x >= 11*this.tileWidth && player.y <= 8*this.tileHeight) && this.water.visible){
             player.climb();
         }
         // allow restarting
