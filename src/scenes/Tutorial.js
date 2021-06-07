@@ -14,33 +14,37 @@ class Tutorial extends Phaser.Scene {
         if(!this.bgm.isPlaying){
             this.bgm.play();
         }
+        // level variables
         this.noPower = true;
+        this.pause   = false;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
         this.lastTime = this.time.now;
         // Text Bubbles Prefab
         this.tb = this.add.group(this);
         this.boxMsgs = new TextBubbles();
-        // Loading Tilemap
+        // Loading Tilemap and the layers
         this.map     = this.make.tilemap({key: 'tutorialMap'});
         this.tileset = this.map.addTilesetImage('tilemap 2');
-        this.map.createStaticLayer('BG', this.tileset, 0, 0); 
-        this.floor        = this.map.createStaticLayer('Grounds', this.tileset, 0, 0); // make ground walkable
-        this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
-        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
-        this.pipes        = this.map.createStaticLayer('Pipes', this.tileset, 0, 0);   // Everything behind player not in background
-        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0, 0);        // danger spikes
+        this.map.createLayer('BG', this.tileset, 0, 0);
+        this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0); // make ground walkable
+        const bounds      = this.map.createLayer('Grounds for the Camera', this.tileset, 0, 0);
+        this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);     // wiring and such
+        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);        // climbable objects
+        this.organs       = this.map.createLayer('Brain and Heart', this.tileset, 0, 0);// organs
+        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);          // pipe system in front of the player
+        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0, 0);         // danger spikes
         this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0);  // info graphics "on"
-        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");        // grab spawn info
-        // for ease of use
+        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");  // grab spawn info
+        // for ease of use / math
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
         this.mapHeightP = this.map.heightInPixels;
         this.mapWidthP  = this.map.widthInPixels;
-        console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
-        console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
+        //console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
+        //console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
 
-        // player stuff here
+        // player sprite
         let frameNames = this.anims.generateFrameNames('player',{
             start: 1, end: 6, prefix: 'spacemanrun'
         });
@@ -53,23 +57,15 @@ class Tutorial extends Phaser.Scene {
         player = new Player(this, spawnPoint.x, spawnPoint.y, 'player', 0);
         player.setScale(1.8);
         player.anims.play('run');
-        // temp text
-        this.add.text(this.mapWidthP - 3.2*this.tileWidth, this.mapHeightP - (5*this.tileHeight),
-            `Use A D to Move\nW and S To Climb\nSPACE to Jump`, popUpConfig).setOrigin(0.5);
-        this.add.text(this.mapWidthP - 3.2*this.tileWidth, this.mapHeightP - (3.5*this.tileHeight), 
-            `Remember to use your mouse`, popUpConfig).setOrigin(0.5);
-        //scene puzzle things
-        this.pointerX = 0;
-        this.pointerY = 0;
-        this.input.on('pointermove', function(pointer){
-            this.pointerX = pointer.x;
-            this.pointerY = pointer.y;
-        }, this);
+        // reminder text
+        this.add.text(this.mapWidthP - 3.2*this.tileWidth, this.mapHeightP - (4*this.tileHeight),
+            `ESC will open\nthe controls overlay`, popUpConfig).setOrigin(0.5);
 
         // ALL Pointer Hover Interactions
         // "pointerover" == when pointer is hovering on object
         // "pointerout " == when pointer is NOT hovering on object
-        // create invisible rectangle over interatables
+        // create invisible rectangle over interactables; 
+        // this is excessive, but sprite from Tilemap has issues
         this.brainAttention = this.add.rectangle(6*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.brainAttention.setInteractive({cursor: 'url(./assets/pointers/BrainPointer.png), pointer'}).on('pointerdown', () => 
         {if(!this.NoPower){this.textbox(player.x, player.y, 'brain')}});
@@ -108,20 +104,22 @@ class Tutorial extends Phaser.Scene {
             this.powerOff = this.map.createLayer('Power Off', this.tileset, 0, 0);
         });
 
-        //camera things
-        //configuration
+        //camera config and follow
         this.cameras.main.setBounds(0,0,this.mapWidthP,this.mapHeightP);
         this.cameras.main.setZoom(1);
-        //have the camera follow the player
         this.cameras.main.startFollow(player);
+
         // setup collisions anything not of index below has collision ON
         this.floor.setCollisionByExclusion(-1, true);
         this.climbable.setCollisionByExclusion(-1, true);
         this.spikes.setCollisionByExclusion(-1, true);
+        bounds.setCollisionByExclusion(-1, true);
         // setup world collliders
+        this.physics.add.collider(bounds, player);
         this.physics.add.collider(this.floor, player);
         this.physics.add.overlap (this.climbable, player);
         this.physics.add.overlap (this.spikes, player);
+        
         // tint entire forground for the "fog of war" effect
         this.rt = new Phaser.GameObjects.RenderTexture(this, 0,0, this.mapWidthP,this.mapHeightP).setVisible(false);
         this.cover = this.add.image(0,0, 'tinter').setOrigin(0);
@@ -132,9 +130,10 @@ class Tutorial extends Phaser.Scene {
         // light around player
         this.light = this.add.circle(player.x, player.y, player.width*4, 0xffffff);
         this.light.visible = false;
+
         // set up movement keys and restart
-        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R"});
-        
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R", esc:"ESC"});
+
         //debug rendering
         /*
         const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -150,7 +149,9 @@ class Tutorial extends Phaser.Scene {
         //fog of war around player
         this.rt.clear();
         this.rt.draw(this.light, player.x, player.y);
-        //console.log(player.velocityY);
+        // update time
+        this.currTime = this.time.now;
+
         if(movement.left.isUp && movement.right.isUp){
             player.anims.play('run');
         }
@@ -158,22 +159,26 @@ class Tutorial extends Phaser.Scene {
             player.jump();
             this.lastTime = this.currTime;
         }
+
         if(this.spikes.getTileAtWorldXY(player.x, player.y)){
             this.restart();
         }
+
         // check if player is ontop of a ladder for climbing
         if(this.climbable.getTileAtWorldXY(player.x, player.y)) 
         {
             player.climb();
         }
-        this.currTime = this.time.now; //update current time
+
         // check if player is at the exit door
         if((Phaser.Math.Within(player.x, this.mapWidthP - this.tileWidth, 64) && Phaser.Math.Within(player.y, 3*this.tileHeight, 128))
           && this.currTime - this.lastTime >= 2500){ // only trigger once every 2.5 seconds
-            if(this.noPower){ // previsouly was if this.NoPower for power off condition
+            if(this.noPower){ // previously was if this.NoPower for power off condition
                 completed[0] = 1;  //set completed tutorial level to true
+                this.bgm.stop();
                 this.scene.start('gameover');
             } else {
+                this.bgm.stop();
                 this.lastTime = this.currTime;
                 this.textbox(player.x, player.y, 'Condition not met');
                 this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});
@@ -183,10 +188,33 @@ class Tutorial extends Phaser.Scene {
         if(movement.restart.isDown){
             this.restart();
         }
+        if(Phaser.Input.Keyboard.JustDown(movement.esc)){
+            this.pauseMenu();
+        }
     }
 
     restart(){
+        this.bgm.stop();
         this.scene.start('tutorial');
+    }
+
+    pauseMenu(){
+        console.log(this.pause);
+        if(this.pause){
+            this.popup.clear(true, true);
+        } else{
+            this.popup = this.add.group();
+            let back   = this.add.rectangle(135, 70, 250, 125, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
+            back.setStrokeStyle(5, 0xAF2A20);
+            let txt    = this.add.text(back.x, back.y, 
+            "Movement: W A S D\nJump: Space\nRestart: R\nMouse1: Interact\nEsc to close", 
+            bodyConfig).setOrigin(0.5).setScrollFactor(0);
+            back.alpha = 0.7;
+            txt.alpha  = 0.7;
+            this.popup.add(back);
+            this.popup.add(txt);
+        }
+        this.pause = !this.pause;
     }
 
     textbox(x, y, objName){
@@ -201,18 +229,18 @@ class Tutorial extends Phaser.Scene {
             stroke: '#000000',
             backgroundColor: '#000000',
             align: 'center',
-            fixedWidth:  100,
-            wordWrap: {width: 100}, // keep width the same as fixedWidth
+            fixedWidth:  125,
+            wordWrap: {width: 125}, // keep width the same as fixedWidth
         }
         // X is center of camera - width of message above
         // Y is based on the current scroll factor of the camera
         // if the scroll factor is > 0 or < gameH then we know the character is center of camera
         // else he is either near the top or bottom respectively
-
+        // scrollY < NUMBER depends on the level so change accordingly
         if(this.cameras.main.scrollY < 480 && this.cameras.main.scrollY > 0){
-            y = this.cameras.main.centerY / 2 - (2*height);
+            y = this.cameras.main.centerY / 2 - (2*height);  // give some room above player head by padding height
         } else if (this.cameras.main.scrollY == 0){
-            y = this.cameras.main.centerY / 2 - 1.2*height; // give some room above player head by padding height
+            y = this.cameras.main.centerY / 2 - 1.2*height;
         } else { // camera at bottom of the map, character is there too
             y = this.cameras.main.centerY;
         }

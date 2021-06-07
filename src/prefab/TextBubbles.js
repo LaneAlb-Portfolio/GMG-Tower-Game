@@ -8,10 +8,10 @@ class TextBubbles {
 
         //tutorial
         this.tut      = "Welcome to the tutorial! Explore and have fun.";
-        this.spikes   = "Beware of heights and spikes, they will kill you!";
+        this.spikes   = "Beware of the spikes, they will kill you!";
         this.brain    = "This is the brain, it powers everything here.";
         //this.brain    = "Hello, Im the brain. I. HAVE. POWER!"; //this should be on the brain popup itself
-        this.heart    = "This is the heart, it supplies blood everywhere there is pipes.";
+        this.heart    = "This is the heart, it supplies blood through pipes.";
         //this.heart    = "Hello Im... the heart... thump thump... thump thump"; //this should be on the heart popup itself
         //this.exit = "You are nearing the end, normally this is where you would double check your game objectives.";
 
@@ -25,13 +25,8 @@ class TextBubbles {
         //this.leverOn = 'The door won't open without flipping the switch'; intuition 3 (if we choose to keep it): when the player clicks the door and not the switch
         this.faucet   = 'Click to Stop the flow';
         this.drain    = 'Click to Drain the Water';
-        
-        
         this.noExit   = "I still have things to do here...";
-        
         this.level1   = "The Heart is out of control here";
-        
-        
         this.elevator = "This must go somewhere";
         this.lever    = "This lever must do something";
     }
@@ -56,7 +51,7 @@ class TextBubbles {
                 return this.heart;
             case 'spikes':
                 return this.spikes;
-            case 'cantYet':
+            case 'Cant Do Yet':
                 return this.cantYet;
             case 'condition not met':
                 return this.noExit;
@@ -90,7 +85,7 @@ class TextBubbles {
                 return this.heart.length;
             case 'spikes':
                 return this.spikes.length;
-            case 'cantYet':
+            case 'Cant Do Yet':
                 return this.cantYet.length;
             case 'condition not met':
                 return this.noExit.length;

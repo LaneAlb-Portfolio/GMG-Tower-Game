@@ -17,7 +17,6 @@ class Load extends Phaser.Scene {
         this.load.tilemapTiledJSON('MainMenu', 'tilemaps/MainMenu.json');
         this.load.tilemapTiledJSON('tutorialMap', 'tilemaps/Tutorial.json'); //load json
         this.load.tilemapTiledJSON('lvl1Map', 'tilemaps/Level1.json'); //load json
-        this.load.tilemapTiledJSON('lvl2Map', 'tilemaps/Level2.json');
         this.load.image('bg', 'imgs/black.jpg');
         //temp drain plug image
         this.load.image('drainplug','imgs/drain_plug.png');

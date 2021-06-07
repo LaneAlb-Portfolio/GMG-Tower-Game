@@ -9,7 +9,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);       // add physics body
         this.setImmovable(false);    
         //this.setCollideWorldBounds(true);
-        this.setDepth(1); // set z height to 
         this.setBlendMode('SCREEN');
         this.setMaxVelocity(1000,1000);
         this.setDragY(0);
@@ -31,7 +30,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     slow(){
         // slow player for some reason
-        this.setVelocityX(this.VelocityX/2);
+        this.setVelocityX(this.VelocityY/2);
     }
 
     climb(){

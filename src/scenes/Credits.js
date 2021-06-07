@@ -25,6 +25,6 @@ class Credits extends Phaser.Scene {
                 peeps.destroy();
             }
         });
-        this.time.delayedCall(5000, () => { this.scene.start('gameover'); });
+        this.time.delayedCall(5000, () => { this.scene.start('title'); });
     }
 }

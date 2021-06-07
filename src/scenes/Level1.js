@@ -14,6 +14,7 @@ class Level1 extends Phaser.Scene {
         if(!this.bgm.isPlaying){
             this.bgm.play();
         }
+        // level variables
         this.faucetOff = false;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
@@ -22,27 +23,29 @@ class Level1 extends Phaser.Scene {
         // Text Bubbles Prefab
         this.tb = this.add.group(this);
         this.boxMsgs = new TextBubbles();
-        // Loading Tilemap
+        // Loading Tilemap and layers
         this.map     = this.make.tilemap({key: 'lvl1Map'});
         this.tileset = this.map.addTilesetImage('tilemap 2');
-        this.map.createStaticLayer('BG', this.tileset, 0, 0); 
-        this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0);       // make ground walkable
+        this.map.createLayer('BG', this.tileset, 0, 0); 
+        this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0);         // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
-        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);         // Everything behind player not in background
+        this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);           // Everything behind player not in background
         this.pipesCollide = this.map.createLayer('Collide Pipes', this.tileset, 0, 0);
-        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);        // climbable objects
-        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);         // danger spikes
-        this.puzzleInitial= this.map.createStaticLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
-        this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0); // attention panels
-        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START"); // grab spawn info
+        this.climbable    = this.map.createLayer('Ladders', this.tileset, 0,0);          // climbable objects
+        this.spikes       = this.map.createLayer('Spikes', this.tileset, 0,0);           // danger spikes
+        this.puzzleInitial= this.map.createLayer('Puzzle Initial State', this.tileset, 0, 0); // level and drain
+        this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0);   // attention panels
+        this.organs       = this.map.createLayer('Brain and Heart', this.tileset, 0, 0); // organs
+        const bounds      = this.map.createLayer('Grounds for the Camera', this.tileset, 0, 0);
+        const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");   // grab spawn info
 
         // for ease of tilemap use
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
         this.mapHeightP = this.map.heightInPixels;
         this.mapWidthP  = this.map.widthInPixels;
-        console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
-        console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
+        //console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
+        //console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
 
         // player stuff here
         let frameNames = this.anims.generateFrameNames('player',{
@@ -62,6 +65,20 @@ class Level1 extends Phaser.Scene {
         this.upPlatforms = new UpwordsPlat(this, 7*this.tileWidth, this.mapHeightP - 7*this.tileHeight, 7*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
         this.upPlatforms.setScale(0.5);
         
+        // sparks on light under the water
+        this.sparks = this.add.particles('waterdrop');
+        this.sparks.createEmitter({
+            x: 13*this.tileWidth,
+            y: 4.5*this.tileHeight,
+            lifespan: 50,
+            speed: { min: 150, max: 300 },
+            gravityY: 300,
+            scale: { start: 0.5 },
+            tint: [0xe9f024],
+            quantity: 1,
+            blendMode: 'ADD',
+        });
+
         // drain plug
         // drain is index 109
         // this.drains = this.map.findByIndex(109, 0, false, this.foreground);
@@ -184,13 +201,15 @@ class Level1 extends Phaser.Scene {
         this.spikes.setCollisionByExclusion(-1, true);
         this.pipesCollide.setCollisionByExclusion(-1, true);
         this.puzzleInitial.setCollisionByExclusion(-1, true);
+        bounds.setCollisionByExclusion(-1, true);
         // setup world colliders
         this.physics.add.collider(this.floor, player);
         this.physics.add.collider(this.pipesCollide, player);
         this.physics.add.collider(this.upPlatforms, player);
-        this.puzzleCollider = this.physics.add.collider(this.puzzleInitial, player);
         this.physics.add.overlap (this.climbable, player);
         this.physics.add.overlap (this.spikes, player);
+        this.physics.add.collider(bounds, player);
+        this.puzzleCollider = this.physics.add.collider(this.puzzleInitial, player);
         // tint entire forground for the "fog of war" effect
         this.rt = new Phaser.GameObjects.RenderTexture(this, 0,0, this.mapWidthP,this.mapHeightP).setVisible(false);
         this.cover = this.add.image(0,0, 'tinter').setOrigin(0);
@@ -202,7 +221,7 @@ class Level1 extends Phaser.Scene {
         this.light.visible = false;
 
         // set up movement keys and restart
-        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R"});
+        movement = this.input.keyboard.addKeys({up:"W",down:"S",left:"A",right:"D", jump:"SPACE", restart: "R", esc:"ESC"});
 
         //debug rendering
         /*
@@ -234,22 +253,24 @@ class Level1 extends Phaser.Scene {
         {
             player.climb();
         }
+        // this allows the player to "swim" in the blood
+        if(player.x >= 11*this.tileWidth && player.y <= 8*this.tileHeight){
+            player.climb();
+        }
         // allow restarting
         if(movement.restart.isDown){
             this.restart();
         }
-
+        // pause overlay
+        if(Phaser.Input.Keyboard.JustDown(movement.esc)){
+            this.pauseMenu();
+        }
         this.currTime = this.time.now; //update current time
         // check if player is at the exit door && reduce function calls overall using game clock
         if((Phaser.Math.Within(player.x, this.mapWidthP - this.tileWidth, 64) && Phaser.Math.Within(player.y, 3*this.tileHeight, 128))
           && this.currTime - this.lastTime >= 2500){ // only trigger once every 2.5 seconds
             this.completed();
         }
-    }
-
-    swim(){
-        player.slow();
-        player.climb();
     }
 
     platformMovement(direction){
@@ -264,12 +285,33 @@ class Level1 extends Phaser.Scene {
             this.textbox(player.x, player.y, 'Condition not met');
             this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});
         } else {
-           // completed[1] = 1;  2nd level not implemented
+            // completed[1] = 1;  2nd level not implemented
+            this.bgm.stop();
             this.scene.start('credits');
         }
     }
 
+    pauseMenu(){
+        console.log(this.pause);
+        if(this.pause){
+            this.popup.clear(true, true);
+        } else{
+            this.popup = this.add.group();
+            let back   = this.add.rectangle(135, 70, 250, 125, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
+            back.setStrokeStyle(5, 0xAF2A20);
+            let txt    = this.add.text(back.x, back.y, 
+            "Movement: W A S D\nJump: Space\nRestart: R\nMouse1: Interact\nEsc to close", 
+            bodyConfig).setOrigin(0.5).setScrollFactor(0);
+            back.alpha = 0.7;
+            txt.alpha  = 0.7;
+            this.popup.add(back);
+            this.popup.add(txt);
+        }
+        this.pause = !this.pause;
+    }
+
     restart(){
+        this.bgm.stop();
         this.scene.start('levelOne');
     }
 
@@ -300,7 +342,7 @@ class Level1 extends Phaser.Scene {
         } else { // camera at bottom of the map, character is there too
             y = this.cameras.main.centerY;
         }
-        console.log(this.cameras.main.scrollY);
+        
         this.tb.add(this.add.text(this.cameras.main.centerX - 50, y,
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }

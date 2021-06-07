@@ -30,7 +30,7 @@ class Title extends Phaser.Scene {
         this.map.createLayer('Heart and Brain', this.tileset, 0, 0);
         this.map.createLayer('Pipes', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
-        this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0);  // info graphics "on"
+        this.power        = this.map.createLayer('Inital State', this.tileset, 0, 0);  // info graphics "on"
         this.noPower      = this.map.createLayer('Power off', this.tileset, 0, 0);
         const bounds      = this.map.createLayer('Ground for the Camera', this.tileset, 0, 0);
 
@@ -41,8 +41,8 @@ class Title extends Phaser.Scene {
         this.tileWidth  = this.map.tileWidth;
         this.mapHeightP = this.map.heightInPixels;
         this.mapWidthP  = this.map.widthInPixels;
-        console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
-        console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
+        //console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
+        //console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
 
         // Title Txt
         this.add.text(10*this.tileWidth, 6*this.tileHeight, 'Living Demolition', headerConfig).setOrigin(0.5);
@@ -65,13 +65,13 @@ class Title extends Phaser.Scene {
 
         this.lever = this.add.rectangle(6.5*this.tileWidth, 2.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
-            this.attention.destroy();
+            this.power.visible = true;;
             if(!this.noPower.visible){ // if power is ON
                 this.noPower.visible = true;
-                this.attention.visible = false;
+                this.power.visible = false;
             } else{ // let the player turn power back on
                 this.noPower.visible = false;
-                this.attention.visible = true;
+                this.power.visible = true;
             }
         });
         this.leverbutton = this.add.rectangle(6.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
@@ -144,7 +144,7 @@ class Title extends Phaser.Scene {
         {
             player.climb();
         }
-        if(movement.esc.isDown){
+        if(this.popup && movement.esc.isDown){
             this.popup.clear(true, true);
         }
     }
@@ -176,7 +176,7 @@ class Title extends Phaser.Scene {
         } else { // camera at bottom of the map, character is there too
             y = this.cameras.main.centerY;
         }
-        console.log(this.cameras.main.scrollY);
+        
         this.tb.add(this.add.text(this.cameras.main.centerX - 50, y,
             this.boxMsgs.messageFind(objName), this.txtstyle).setScrollFactor(0) );
     }
