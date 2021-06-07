@@ -257,8 +257,8 @@ class Level1 extends Phaser.Scene {
             player.climb();
         }
         // allow restarting
-        if(movement.restart.isDown){
-            this.restart();
+        if(Phaser.Input.Keyboard.JustDown(movement.restart)){
+            this.scene.start('death');
         }
         // pause overlay
         if(Phaser.Input.Keyboard.JustDown(movement.esc)){

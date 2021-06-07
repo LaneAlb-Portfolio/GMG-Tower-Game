@@ -38,7 +38,6 @@ let cursors;
 let movement;
 let completed = [1,0,0,0,0]; // check for completed levels
 let backmusic;
-let currLevel; //this will be used for PauseMenu to resume the proper level
 // text configs use Font we want later
 // change or add more configs as needed
 let titleConfig = {fontFamily: 'thinPixel', fontSize: '128px', color: '#FFFFFF'};

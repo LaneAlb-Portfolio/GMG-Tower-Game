@@ -159,7 +159,7 @@ class Tutorial extends Phaser.Scene {
             player.jump();
             this.lastTime = this.currTime;
         }
-
+        // if the player hit the spikes they die
         if(this.spikes.getTileAtWorldXY(player.x, player.y)){
             this.restart();
         }
@@ -185,7 +185,7 @@ class Tutorial extends Phaser.Scene {
             }
         }
         // allow restarting
-        if(movement.restart.isDown){
+        if(Phaser.Input.Keyboard.JustDown(movement.restart)){
             this.restart();
         }
         if(Phaser.Input.Keyboard.JustDown(movement.esc)){
