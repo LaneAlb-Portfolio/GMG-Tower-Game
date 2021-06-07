@@ -78,6 +78,7 @@ class Select extends Phaser.Scene {
                 break;
             case 'back':
                 this.hide();
+                backmusic.stop();
                 this.scene.start('title');
                 break;
             default:

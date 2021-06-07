@@ -21,7 +21,7 @@ let config = {
             debug: false,
         }
     },
-    scene: [ Load, Title, Tutorial, Level1, Select, GameOver, Credits, StaticCredits ] // to change where loading screen is move it around in this array
+    scene: [ Load, Title, Tutorial, Level1, Select, GameOver, Credits, StaticCredits, YouDied, Controls ] // to change where loading screen is move it around in this array
 }
 
 // define game
@@ -36,7 +36,7 @@ let player; // this makes referencing player object a bit cleaner
 let time;   // time in game, used for event triggers
 let cursors;
 let movement;
-let completed = [1,0,0,0,0]; // check for completed levels
+let completed = [0,0,0,0,0]; // index 1: completion of tutorial , index 2: current level
 let backmusic;
 // text configs use Font we want later
 // change or add more configs as needed

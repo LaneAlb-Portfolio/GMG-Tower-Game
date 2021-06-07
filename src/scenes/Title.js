@@ -4,6 +4,7 @@ class Title extends Phaser.Scene {
     }
 
     create() {
+        this.brainpower = true;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
         this.lastTime = -1000;
@@ -53,42 +54,74 @@ class Title extends Phaser.Scene {
         // interaction setup
         this.controlsAttention = this.add.rectangle(5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.controlsAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
-        {backmusic.stop(); this.controls();});
+        { if(this.brainpower == false){this.textbox(player.x, player.y, 'noPower');
+                this.time.delayedCall(2500, () => { this.tb.clear(true, true); });}
+        else{backmusic.stop(); this.scene.start('controls');//this.controls();
+        } });
 
         this.startAttention = this.add.rectangle(10*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
-        {this.scene.start('select');});
+        {if(this.brainpower == false){this.textbox(player.x, player.y, 'noPower');
+            this.time.delayedCall(2500, () => { this.tb.clear(true, true); });}
+        else{backmusic.stop(); this.scene.start('select');}});
 
         this.creditsAttention = this.add.rectangle(this.mapWidthP - 5*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.creditsAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
-        {backmusic.stop(); this.scene.start('staticCredits');});
+        {if(this.brainpower == false){this.textbox(player.x, player.y, 'noPower');
+            this.time.delayedCall(2500, () => { this.tb.clear(true, true); });}
+        else{backmusic.stop(); this.scene.start('staticCredits');}});
 
         this.lever = this.add.rectangle(6.5*this.tileWidth, 2.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
             this.power.visible = true;;
             if(!this.noPower.visible){ // if power is ON
-                this.noPower.visible = true;
-                this.power.visible = false;
+                this.powerDown = this.sound.add('poweringDown')
+                this.powerDown.play();
+                this.brainpower = false;
+                this.noPower.setVisible(true);
+                this.power.setVisible(false);
             } else{ // let the player turn power back on
-                this.noPower.visible = false;
-                this.power.visible = true;
+                this.powerUp = this.sound.add('poweringUp')
+                this.powerUp.play();
+                this.brainpower = true;
+                this.noPower.setVisible(false);
+                this.power.setVisible(true);
             }
         });
         this.leverbutton = this.add.rectangle(6.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
-        this.leverbutton.setInteractive().on('pointerover', () => {
-            this.textbox(player.x, player.y, 'lever');
+        this.leverbutton.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerover', () => {
+            if(this.brainpower == false){this.textbox(player.x, player.y, 'noPower');}
+            else{this.textbox(player.x, player.y, 'lever');}
         });
         this.leverbutton.on('pointerout', () => {
             this.tb.clear(true, true);
         });
 
+        this.falseButton = this.add.rectangle(12.5*this.tileWidth, this.mapHeightP - 6.5*this.tileHeight, 64, 64,);//0xFFFFF, 1);
+        this.falseButton.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerover', () => { if(this.brainpower == false){this.textbox(player.x, player.y, 'noPower');}
+        else{this.textbox(player.x, player.y, 'buttonFalse');}
+        });
+        this.falseButton.on('pointerout', () => {
+            this.tb.clear(true, true);
+        });
+
         this.elevatorButton = this.add.rectangle(2.5*this.tileWidth, this.mapHeightP - 1.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
-        this.elevatorButton.setInteractive().on('pointerover', () => {
-            this.textbox(player.x, player.y, 'elevator');
+        this.elevatorButton.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerover', () => {
+            if(this.brainpower == false){this.textbox(player.x, player.y, 'noPower');}
+            else{this.textbox(player.x, player.y, 'elevator');}
         });
         this.elevatorButton.on('pointerout', () => {
             this.tb.clear(true, true);
         });
+
+        this.brainObject = this.add.rectangle(9.5*this.tileWidth, 2.5*this.tileHeight, 192, 192);//0xFFFFF, 1);
+        this.brainObject.setInteractive({cursor: 'url(./assets/pointers/BrainPointer.png), pointer'});
+        this.brainObject.on('pointerup', () => {
+            if(this.brainpower == true){
+                this.brainsound= this.sound.add('brainsfx'),
+                this.brainsound.play()}
+            this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
+
 
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.upPlatforms = new UpwordsPlat(this, this.tileWidth, this.mapHeightP - 2*this.tileHeight, 3*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        
@@ -146,6 +179,7 @@ class Title extends Phaser.Scene {
         }
         if(this.popup && movement.esc.isDown){
             this.popup.clear(true, true);
+            backmusic.play();
         }
     }
 
@@ -184,9 +218,9 @@ class Title extends Phaser.Scene {
 
     controls(){
         this.popup = this.add.group();
-        let back   = this.add.rectangle(centerX, centerY, 500, 475, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
+        let back   = this.add.rectangle(centerX, centerY, 550, 475, 0x525252, 1).setOrigin(0.5).setScrollFactor(0);
         back.setStrokeStyle(10, 0xAF2A20);
-        let txt    = this.add.text(centerX, centerY, "Controls\nW\nA S D\nJump: Space\nMouse1: Click\nEsc to close", buttonConfg).setOrigin(0.5).setScrollFactor(0);
+        let txt    = this.add.text(centerX, centerY, "Controls\nW\nA S D\nJump: Space\nInteract: Mouse1\nEsc to close", buttonConfg).setOrigin(0.5).setScrollFactor(0);
         this.popup.add(back);
         this.popup.add(txt);
     }

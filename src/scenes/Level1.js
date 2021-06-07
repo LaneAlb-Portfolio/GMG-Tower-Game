@@ -15,6 +15,7 @@ class Level1 extends Phaser.Scene {
             this.bgm.play();
         }
         // level variables
+        completed[1] = 1;
         this.faucetOff = false;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
@@ -28,7 +29,6 @@ class Level1 extends Phaser.Scene {
         this.tileset = this.map.addTilesetImage('tilemap 2');
         this.map.createLayer('BG', this.tileset, 0, 0); 
         this.floor        = this.map.createLayer('Grounds', this.tileset, 0, 0);         // make ground walkable
-        this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
         this.organs       = this.map.createLayer('Brain and Heart', this.tileset, 0, 0); // organs
         this.pipes        = this.map.createLayer('Pipes', this.tileset, 0, 0);           // Everything behind player not in background
         this.pipesCollide = this.map.createLayer('Collide Pipes', this.tileset, 0, 0);
@@ -38,6 +38,7 @@ class Level1 extends Phaser.Scene {
         this.attention    = this.map.createLayer('Initial State', this.tileset, 0, 0);   // attention panels
         const bounds      = this.map.createLayer('Grounds for the Camera', this.tileset, 0, 0);
         const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");   // grab spawn info
+        this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
 
         // for ease of tilemap use
         this.tileHeight = this.map.tileHeight;
@@ -147,25 +148,38 @@ class Level1 extends Phaser.Scene {
         // turn these into a prefab at some point
         this.heartAttention = this.add.rectangle(11.5*this.tileWidth, 13*this.tileHeight, 192, 128);//, 0xFFFFF, 1);
         this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
-        this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart')});
+        this.heartAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'heart1')});
         this.heartAttention.on('pointerup', () => {
-            this.heartBeat= this.sound.add('heartbeat')
-            this.heartBeat.play(),this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+            this.heartBeat= this.sound.add('heartbeat'),
+            this.heartBeat.play(),
+            this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.heartHint = this.add.rectangle(8.5*this.tileWidth, this.mapHeightP - 6.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.heartHint.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
-        this.heartHint.on('pointerover', () => {this.textbox(player.x, player.y, 'heart')});
+        this.heartHint.on('pointerover', () => {this.textbox(player.x, player.y, 'button2')});
         this.heartHint.on('pointerout', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.startAttention = this.add.rectangle(this.mapWidthP - 2.5*this.tileWidth, this.mapHeightP - 1.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'});
-        this.startAttention.on('pointerover', () => {this.textbox(player.x, player.y, 'lvl1')});
+        this.startAttention.on('pointerover', () => {this.textbox(player.x, player.y, 'button1')});
         this.startAttention.on('pointerout', () =>  {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.brainAttention = this.add.rectangle(25.5*this.tileWidth, 2.5*this.tileHeight, 192, 192,);//0xFFFFF, 1);
+        this.brainAttention.setInteractive({cursor: 'url(./assets/pointers/BrainPointer.png), pointer'});
+        this.brainAttention.on('pointerdown', () => {this.textbox(player.x, player.y, 'brain1')});
+        this.brainAttention.on('pointerup', () => {
+            this.brainsound= this.sound.add('brainsfx'),
+            this.brainsound.play(),
+            this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
 
         //Josh added door pointer, for the pupose of clicking on the door to either: let the player know to flip the switch or to open w/o flipping the switch
         this.door = this.add.rectangle(14.5*this.tileWidth, 7*this.tileHeight, 16, 128);//, 0xFFFFF, 1);
-        this.door.setInteractive({cursor: 'url(./assets/pointers/DoorPointer.png), pointer'});
+        this.door.setInteractive({cursor: 'url(./assets/pointers/DoorPointer.png), pointer'}).on('pointerdown', () => { 
+            if(this.water.visible){
+                this.textbox(player.x, player.y, 'leverOn');
+            }
+        });
 
         this.lever = this.add.rectangle(13.5*this.tileWidth, 7.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerdown', () => { 
@@ -183,16 +197,20 @@ class Level1 extends Phaser.Scene {
                 //this.badCodingPractice = this.map.createLayer('HideBecauseCodeNoWork', this.tileset, 0, 0);
                 this.puzzleDone = this.map.createLayer('Puzzle Done', this.tileset, 0, 0);
                 this.door.setVisible(0);
+                this.lever.destroy();
             }
         });
         this.faucet = this.add.rectangle(10.5*this.tileWidth, 7*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.faucet.setInteractive({cursor: 'url(./assets/pointers/FaucetPointer.png), pointer'}).on('pointerup', () => { //added in the faucet pointer just because
-            this.faucetSound = this.sound.add('faucet');
-            this.faucetSound.play();
+            if(this.faucetOff == false) {
+                this.faucetSound = this.sound.add('faucet');
+                this.faucetSound.play();
+            }
             // stop emitter
             console.log("faucet");
             this.faucetOff = true;
             this.waterDrops.destroy();
+            this.faucet.destroy();
         });
 
         // camera things
@@ -254,7 +272,8 @@ class Level1 extends Phaser.Scene {
             this.lastTime = this.currTime;
         }
         if(this.spikes.getTileAtWorldXY(player.x, player.y)){ //if hit spike restart level
-            this.restart();
+            this.bgm.stop();
+            this.scene.start('death');
         }
         if(this.climbable.getTileAtWorldXY(player.x, player.y))  // if overlapping ladder then climb it
         {
@@ -266,7 +285,9 @@ class Level1 extends Phaser.Scene {
         }
         // allow restarting
         if(Phaser.Input.Keyboard.JustDown(movement.restart)){
-            this.scene.start('death');
+            this.bgm.stop();
+            this.pause = undefined;
+            this.scene.restart();
         }
         // pause overlay
         if(Phaser.Input.Keyboard.JustDown(movement.esc)){

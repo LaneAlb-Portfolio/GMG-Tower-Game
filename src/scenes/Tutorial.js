@@ -15,7 +15,8 @@ class Tutorial extends Phaser.Scene {
             this.bgm.play();
         }
         // level variables
-        this.noPower = true;
+        completed[1] = 0;
+        this.noPower = false;
         this.pause   = false;
         this.movementVelocity = 200;
         this.currTime = this.time.now;
@@ -36,6 +37,8 @@ class Tutorial extends Phaser.Scene {
         this.spikes       = this.map.createLayer('Spikes', this.tileset, 0, 0);         // danger spikes
         this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0);  // info graphics "on"
         const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");  // grab spawn info
+        this.powerOff     = this.map.createLayer('Power Off', this.tileset, 0, 0);
+        this.powerOff.setVisible(false);
         // for ease of use / math
         this.tileHeight = this.map.tileHeight;
         this.tileWidth  = this.map.tileWidth;
@@ -69,40 +72,83 @@ class Tutorial extends Phaser.Scene {
         // this is excessive, but sprite from Tilemap has issues
         this.brainAttention = this.add.rectangle(6*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
         this.brainAttention.setInteractive({cursor: 'url(./assets/pointers/BrainPointer.png), pointer'}).on('pointerdown', () => 
-        {if(!this.NoPower){this.textbox(player.x, player.y, 'brain')}});
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+            else{this.textbox(player.x, player.y, 'brain')}});
         this.brainAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
 
-        this.endAttention = this.add.rectangle(this.mapWidthP - 7*this.tileWidth, 3*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.endAttention.setInteractive().on('pointerdown', () => {
-            if(this.noPower){} 
-            else{
-                this.textbox(player.x, player.y, 'condition not met');
-            }
-        });
-        this.endAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+        this.brainObject = this.add.rectangle(2.5*this.tileWidth, 2.5*this.tileHeight, 192, 192,);//0xFFFFF, 1);
+        this.brainObject.setInteractive({cursor: 'url(./assets/pointers/BrainPointer.png), pointer'});
+        this.brainObject.on('pointerdown', () => 
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+            else{this.textbox(player.x, player.y, 'brain0')}});
+        this.brainObject.on('pointerup', () => {
+            if(!this.noPower){
+            this.brainsound= this.sound.add('brainsfx'),
+            this.brainsound.play()}
+            this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
 
-        this.heartAttention = this.add.rectangle(this.mapWidthP - 12*this.tileWidth, 8*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
+        this.heartAttention = this.add.rectangle(this.mapWidthP - 12*this.tileWidth, 8*this.tileHeight, 128, 128,);//0xFFFFF, 1);
         this.heartAttention.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
-        this.heartAttention.on('pointerdown', () => {if(!this.NoPower){this.textbox(player.x, player.y, 'heart');}});
+        this.heartAttention.on('pointerdown', () => 
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+            else{this.textbox(player.x, player.y, 'heart');}});
         this.heartAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
+        this.heartObject = this.add.rectangle(this.mapWidthP - 14.5*this.tileWidth, 8*this.tileHeight, 192, 128,);//0xFFFFF, 1);
+        this.heartObject.setInteractive({cursor: 'url(./assets/pointers/HeartPointer.png), pointer'});
+        this.heartObject.on('pointerdown', () => 
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+          else{this.textbox(player.x, player.y, 'heart0');}});
+        this.heartObject.on('pointerup', () => {
+            if(!this.noPower){
+            this.heartBeat= this.sound.add('heartbeat'),
+            this.heartBeat.play()}            
+            this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
+        this.exitObject = this.add.rectangle(23*this.tileWidth, 3*this.tileHeight, 128, 128,);//0xFFFFF, 1);
+        this.exitObject.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'});
+        this.exitObject.on('pointerdown', () => 
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+            else{this.textbox(player.x, player.y, 'exit');} });
+        this.exitObject.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true); }); });
+
         this.startAttention = this.add.rectangle(this.mapWidthP - 3*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {
-            if(!this.NoPower){this.textbox(player.x, player.y, 'tutorial');}
-        });
+        this.startAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+            else{this.textbox(player.x, player.y, 'tutorial');} });
         this.startAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
+        this.startbutton = this.add.rectangle(this.mapWidthP - 5.5*this.tileWidth, this.mapHeightP - 1.5*this.tileHeight, 64, 64,);// 0xFFFFF, 1);
+        this.startbutton.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'});
+        this.startbutton.on('pointerover', () => 
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+            else {this.textbox(player.x, player.y, 'button');} });
+        this.startbutton.on('pointerout', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
+
         this.spikeAttention = this.add.rectangle(19*this.tileWidth, this.mapHeightP - 2*this.tileHeight, 128, 128);//, 0xFFFFF, 1);
-        this.spikeAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => {
-            this.textbox(player.x, player.y, 'spikes');
-        });
+        this.spikeAttention.setInteractive({cursor: 'url(./assets/pointers/InfoPointer.png), pointer'}).on('pointerdown', () => 
+        {if(this.noPower){this.textbox(player.x, player.y, 'noPower')}
+            else{this.textbox(player.x, player.y, 'spikes');} });
         this.spikeAttention.on('pointerup', () => {this.time.delayedCall(2500, () => { this.tb.clear(true, true);   }); });
 
         this.lever = this.add.rectangle(4.5*this.tileWidth, 3.5*this.tileHeight, 64, 64);//, 0xFFFFF, 1);
         this.lever.setInteractive({cursor: 'url(./assets/pointers/LevelPointer.png), pointer'}).on('pointerup', () => {
-            this.attention.destroy();
-            this.noPower = true;
-            this.powerOff = this.map.createLayer('Power Off', this.tileset, 0, 0);
+            this.leverSound = this.sound.add ('leversfx');
+            this.leverSound.play();
+            if(this.noPower == false){
+                this.powerDown = this.sound.add('poweringDown')
+                this.powerDown.play();
+                this.attention.setVisible(false);
+                this.noPower = true;
+                this.powerOff.setVisible(true);
+            }
+            else{
+                this.powerUp = this.sound.add('poweringUp')
+                this.powerUp.play();
+                this.attention.setVisible(true);
+                this.noPower = false;
+                this.powerOff.setVisible(false); 
+            }
         });
 
         //camera config and follow
@@ -162,7 +208,8 @@ class Tutorial extends Phaser.Scene {
         }
         // if the player hit the spikes they die
         if(this.spikes.getTileAtWorldXY(player.x, player.y)){
-            this.restart();
+            this.bgm.stop();
+            this.scene.start('death');
         }
 
         // check if player is ontop of a ladder for climbing
@@ -174,16 +221,11 @@ class Tutorial extends Phaser.Scene {
         // check if player is at the exit door
         if((Phaser.Math.Within(player.x, this.mapWidthP - this.tileWidth, 64) && Phaser.Math.Within(player.y, 3*this.tileHeight, 128))
           && this.currTime - this.lastTime >= 2500){ // only trigger once every 2.5 seconds
-            if(this.noPower){ // previously was if this.NoPower for power off condition
+            if(this.noPower == false || this.noPower == true){ // previously was if this.NoPower for power off condition
                 completed[0] = 1;  //set completed tutorial level to true
                 this.bgm.stop();
                 this.scene.start('gameover');
-            } else {
-                this.bgm.stop();
-                this.lastTime = this.currTime;
-                this.textbox(player.x, player.y, 'Condition not met');
-                this.time.delayedCall(2500, ()=> {this.tb.clear(true, true);});
-            }
+            } 
         }
         // allow restarting
         if(Phaser.Input.Keyboard.JustDown(movement.restart)){
