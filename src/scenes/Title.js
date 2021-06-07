@@ -27,11 +27,13 @@ class Title extends Phaser.Scene {
         this.map.createLayer('BG', this.tileset, 0, 0); 
         this.floor        = this.map.createLayer('Ground', this.tileset, 0, 0); // make ground walkable
         this.foreground   = this.map.createLayer('Foreground', this.tileset, 0, 0);
+        this.map.createLayer('Heart and Brain', this.tileset, 0, 0);
+        this.map.createLayer('Pipes', this.tileset, 0, 0);
         this.climbable    = this.map.createLayer('Ladders', this.tileset, 0, 0);       // climbable objects
-        this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0); // info graphics "on"
+        this.attention    = this.map.createLayer('Inital State', this.tileset, 0, 0);  // info graphics "on"
         this.noPower      = this.map.createLayer('Power off', this.tileset, 0, 0);
-        this.map.createLayer('Special State', this.tileset, 0, 0);
-        // const bounds   = this.map.createLayer('Grounds for the Camera');
+        const bounds      = this.map.createLayer('Ground for the Camera', this.tileset, 0, 0);
+
         const spawnPoint  = this.map.findObject("Spawns", obj => obj.name == "START");        // grab spawn info
         this.noPower.visible = false;
         // for ease of use
@@ -115,8 +117,10 @@ class Title extends Phaser.Scene {
         // setup collisions anything not of index below has collision ON
         this.floor.setCollisionByExclusion(-1, true);
         this.climbable.setCollisionByExclusion(-1, true);
+        bounds.setCollisionByExclusion(-1, true);
         //bounds.setCollisionByExclusion(-1, true);
         // setup world collliders
+        this.physics.add.collider(bounds, player);
         this.physics.add.collider(this.floor, player);
         this.physics.add.overlap (this.climbable, player);
         this.physics.add.collider(this.upPlatforms, player);
