@@ -48,8 +48,8 @@ class Level1 extends Phaser.Scene {
         //console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
 
         // player stuff here
-        let frameNames = this.anims.generateFrameNames('player',{
-            start: 1, end: 6, prefix: 'spacemanrun'
+        let frameNames = this.anims.generateFrameNames('worker',{
+            start: 1, end: 8, prefix: 'worker'
         });
         this.anims.create({
             key: 'run',
@@ -57,9 +57,10 @@ class Level1 extends Phaser.Scene {
             frameRate: 20,
             repeat: -1
         });
-        player = new Player(this, spawnPoint.x, spawnPoint.y, 'player', 0);
-        player.setScale(1.7);
+        player = new Player(this, spawnPoint.x, spawnPoint.y - 64, 'worker', 0);
+        player.setScale(0.6); // the character is a tad big compared to tiles
         player.anims.play('run');
+        console.log(player.alpha);
 
         // give platforms scene, x, y, endPoint, velocity, texture)
         this.upPlatforms = new UpwordsPlat(this, 7*this.tileWidth, this.mapHeightP - 7*this.tileHeight, 7*this.tileHeight, this.movementVelocity, 'mPlat').setOrigin(0);        

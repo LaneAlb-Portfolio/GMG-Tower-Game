@@ -44,9 +44,9 @@ class Tutorial extends Phaser.Scene {
         //console.log("TileMap Info: W/H" + this.mapHeightP + " , " + this.mapWidthP);
         //console.log("Tile W/H: " + this.tileHeight + " , " + this.tileWidth);
 
-        // player sprite
-        let frameNames = this.anims.generateFrameNames('player',{
-            start: 1, end: 6, prefix: 'spacemanrun'
+        // player stuff here
+        let frameNames = this.anims.generateFrameNames('worker',{
+            start: 1, end: 8, prefix: 'worker'
         });
         this.anims.create({
             key: 'run',
@@ -54,9 +54,10 @@ class Tutorial extends Phaser.Scene {
             frameRate: 20,
             repeat: -1
         });
-        player = new Player(this, spawnPoint.x, spawnPoint.y, 'player', 0);
-        player.setScale(1.8);
+        player = new Player(this, spawnPoint.x, spawnPoint.y - 64, 'worker', 0);
+        player.setScale(0.6); // the character is a tad big compared to tiles
         player.anims.play('run');
+        console.log(player.alpha);
         // reminder text
         this.add.text(this.mapWidthP - 3.2*this.tileWidth, this.mapHeightP - (4*this.tileHeight),
             `ESC will open\nthe controls overlay`, popUpConfig).setOrigin(0.5);

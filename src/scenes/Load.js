@@ -10,8 +10,9 @@ class Load extends Phaser.Scene {
         this.load.image('tinter', 'imgs/screenTint.jpg');
         // Background Menu Image
         this.load.image('brickBg', 'imgs/spacefg.png');
-        // ER Player
-        this.load.atlas('player', 'imgs/spaceman.png', 'imgs/spaceman.json');
+        // Player
+        this.load.atlas('worker', 'imgs/worker_run.png', 'imgs/worker.json');
+        this.load.image('work_still', 'imgs/pc_still.png');
         // Tilemap loading
         this.load.image('tilemap 2', 'tilemaps/tilemap 2.png'); // load png
         this.load.tilemapTiledJSON('MainMenu', 'tilemaps/MainMenu.json');

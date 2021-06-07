@@ -95,8 +95,8 @@ class Title extends Phaser.Scene {
         this.upPlatforms.setScale(0.5);
 
         // player stuff here
-        let frameNames = this.anims.generateFrameNames('player',{
-            start: 1, end: 6, prefix: 'spacemanrun'
+        let frameNames = this.anims.generateFrameNames('worker',{
+            start: 1, end: 8, prefix: 'worker'
         });
         this.anims.create({
             key: 'run',
@@ -104,10 +104,10 @@ class Title extends Phaser.Scene {
             frameRate: 20,
             repeat: -1
         });
-        player = new Player(this, spawnPoint.x, spawnPoint.y, 'player', 0);
-        player.setScale(1.8);
+        player = new Player(this, spawnPoint.x, spawnPoint.y - 64, 'worker', 0);
+        player.setScale(0.6); // the character is a tad big compared to tiles
         player.anims.play('run');
-
+        console.log(player.alpha);
         //camera things
         //configuration
         this.cameras.main.setBounds(0,0,this.mapWidthP,this.mapHeightP);
